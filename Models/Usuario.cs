@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 namespace ComputacionFCQ_MVC.Models
@@ -22,5 +23,25 @@ namespace ComputacionFCQ_MVC.Models
         public virtual Carrera Carrera { get; set; } = null!;
         public virtual ICollection<Reservacion> Reservacions { get; set; }
         public virtual ICollection<Sesion> Sesions { get; set; }
+
+        public static bool ValidarMatricula(string matricula)
+        {
+            if (matricula == "" || matricula==null) return false;
+            foreach (char c in matricula)
+                if (!char.IsDigit(c)) return false;
+            return true;
+        }
+
+        public static Usuario? GetUsuarioPorMatricula(string matricula)
+        {
+            using (var db = new ComputacionFCQContext())
+            {
+                if (db.Usuarios.Where(x => x.Matricula == matricula).FirstOrDefault() != null)
+                {
+                    return db.Usuarios.Where(x => x.Matricula == matricula).First();
+                }
+                return null;
+            }
+        }
     }
 }

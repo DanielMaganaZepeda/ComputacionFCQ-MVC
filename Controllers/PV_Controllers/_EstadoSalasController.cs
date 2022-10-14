@@ -18,7 +18,7 @@ namespace ComputacionFCQ_MVC.Controllers.PV_Controllers
                 {
                     //Obtenermos la lista de reservaciones activas que haya hoy en cada sala, que esten en curso o que empiecen mas tarde
                     List<Reservacion> reservaciones = db.Reservacions.Where(x => x.FechaInicio.Value.DayOfYear == DateTime.Now.DayOfYear && x.Activa == true && x.SalaId == sala_id &&
-                    ((x.FechaInicio.Value <= DateTime.Now && x.FechaFin.Value > DateTime.Now) || (x.FechaInicio.Value > DateTime.Now))).ToList();
+                    ((x.FechaInicio.Value <= DateTime.Now && x.FechaFin.Value > DateTime.Now) || (x.FechaInicio.Value > DateTime.Now))).OrderBy(x=>x.FechaInicio).ToList();
 
                     //Si no hay reservaciones ese dia
                     if (reservaciones.Count == 0)
@@ -45,7 +45,7 @@ namespace ComputacionFCQ_MVC.Controllers.PV_Controllers
                         else
                         {
                             //Si empieza en menos de una hora
-                            if (reservaciones[0].FechaInicio.Value - DateTime.Now < new TimeSpan(1, 0, 0, 0))
+                            if (reservaciones[0].FechaInicio.Value - DateTime.Now < new TimeSpan(1, 0, 0))
                             {
                                 lista.Add($"{sala_id}-Amarillo-Disponible hasta las {reservaciones[0].FechaInicio.Value.ToString("HH:mm")}");
                             }

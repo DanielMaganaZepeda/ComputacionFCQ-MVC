@@ -57,6 +57,24 @@ namespace ComputacionFCQ_MVC.Controllers
             return PartialView("_TablaSesiones", lista);
         }
 
+        [HttpGet]
+        public IActionResult ActualizarSalas()
+        {
+            return Json(Models.Sala.GetSalasDisponibles());
+        }
+
+        [HttpGet]
+        public IActionResult ActualizarComputadoras(int sala)
+        {
+            return Json(Models.Sala.GetComputadorasPorSala(sala));
+        }
+
+        [HttpGet]
+        public IActionResult ActualizarProgramas(int sala)
+        {
+            return Json(Models.Sala.GetProgramasPorSala(sala));
+        }
+
         [HttpPost]
         public IActionResult FinalizarSesion(string id)
         {

@@ -34,6 +34,7 @@ namespace ComputacionFCQ_MVC.Models
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer("Server=DESKTOP-F7IH21V\\SQLEXPRESS ; Database=ComputacionFCQ ; Trusted_Connection=True;");
+                optionsBuilder.UseLazyLoadingProxies();
             }
         }
 

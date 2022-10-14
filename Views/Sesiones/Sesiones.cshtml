@@ -58,7 +58,25 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                @using (Html.BeginForm("IniciarSesion","Sesiones",FormMethod.Post))
+                {
                 <div id="FormUsuario"></div>
+                <hr />
+                <div style="display:flex; color: gray; width:100%">
+                    <div style="width:50px; margin-right:15px;">
+                        Sala
+                        <select id="sala" class="input" style="width:100%; height:35px;"></select>
+                    </div>
+                    <div style="width:100px; margin-right:15px;">
+                        Computadora
+                        <select id="computadora" class="input" style="width:100%; height:35px;"></select>
+                    </div>
+                    <div style="width:100%">
+                        Programa
+                        <select id="programa" class="input" style="width:100%; height:35px;"></select>
+                    </div>
+                </div>
+                }
             </div>
             <div class="modal-footer">
                 <button class="btn btn-success flex" style="margin-left: auto; height:30px;">
@@ -88,7 +106,9 @@ function FinalizarSesionTabla(){
 }
 
 function RecargarFormUsuario() {
-    $('#FormUsuario').load('/_FormUsuario/_FormUsuarioPartial')
+    $('#FormUsuario').load('/_FormUsuario/_FormUsuarioPartial');
+    //var url = "@Html.Raw(Url.Action("_FormUsuarioPartial","_FormUsuario",null))";
+    //$('#FormUsuario').load(url);
 }
 
 function RecargarSalas() {
@@ -98,6 +118,75 @@ function RecargarSalas() {
 function RecargarSesiones() {
     $('#tabla_sesiones').load('/Sesiones/TablaSesionesPartial')
 }
+
+$('#ModalIniciar').on('show.bs.modal', function(e) {
+    //Se vacian las salas
+    $('#sala').empty();
+    //Se obtienen las salas disponibles
+    $.ajax({
+        url: '/Sesiones/ActualizarSalas',
+        type: "GET",
+        success: function (response) {
+            response.forEach(sala => {
+                $('#sala').append($('<option>',{
+                    value: sala,
+                    text: sala
+                }))
+            })
+        }
+    });
+})
+
+$('#ModalIniciar').on('shown.bs.modal', function(e) {
+    $('#sala').trigger('change');
+})
+
+
+$('#sala').change(function() {
+    //Se vacian las computadoras
+    $('#computadora').empty();
+    //Se obtienen las computadoras disponibles
+    $.ajax({
+        url: '/Sesiones/ActualizarComputadoras',
+        data: { sala: $('#sala').val() },
+        type: "GET",
+        success: function (response) {
+            response.forEach(computadora => {
+                $('#computadora').append($('<option>',{
+                    value: computadora,
+                    text: computadora
+                }))
+            })
+        }
+    });
+
+    //Se vacian los programas
+    var programa_nombre = $('#programa').val();
+    $('#programa').empty();
+    //Se obtienen las salas disponibles
+    $.ajax({
+        url: '/Sesiones/ActualizarProgramas',
+        data: { sala: $('#sala').val() },
+        type: "GET",
+        success: function (response) {
+            for (var programa of response) {
+                if (programa == programa_nombre) {
+                    $('#programa').append($('<option>',{
+                        value: programa,
+                        text: programa,
+                        selected: true
+                    }))
+                }
+                else {
+                    $('#programa').append($('<option>',{
+                        value: programa,
+                        text: programa
+                    }))
+                }
+            }
+        }
+    });
+})
 
 $('#ModalFinalizar').on('hidden.bs.modal', function (e) {
     $('#tx_matricula').val("")
