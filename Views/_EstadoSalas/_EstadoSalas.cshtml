@@ -1,0 +1,29 @@
+﻿@*Se manda como modelo una lista de string con el formato {sala_id}-{color}-{mensaje que se pondra en la tabla sobre el tiempo de la reservacion}*@
+@model List<string>
+
+<table class="table" style="width:100%; border-radius:5px; overflow:hidden; margin-bottom:0px;">
+    @foreach(string i in Model)
+    {
+        if (i.Split('-')[1] == "Verde")
+        {
+            <tr style="background-color:lightgreen">
+                <td style="width:80px;">Sala @i.Split('-')[0]</td>
+                <td>@i.Split('-')[2]</td>
+            </tr>
+        }
+        if (i.Split('-')[1] == "Amarillo")
+        {
+            <tr style="background-color:palegoldenrod">
+                <td style="width:80px;">Sala @i.Split('-')[0]</td>
+                <td>@i.Split('-')[2]</td>
+            </tr>
+        }
+        if (i.Split('-')[1] == "Rojo")
+        {
+            <tr style="background-color:lightcoral">
+                <td style="width:80px;">Sala @i.Split('-')[0]</td>
+                <td>@i.Split('-')[2]</td>
+            </tr>
+        }
+    }
+</table>

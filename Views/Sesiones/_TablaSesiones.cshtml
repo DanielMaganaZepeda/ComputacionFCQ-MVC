@@ -1,0 +1,65 @@
+﻿@using static ComputacionFCQ_MVC.Controllers.SesionesController
+
+@if(Model.Count>0){
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <td style="border-bottom-color:gray;">Matricula</td>
+                <td style="border-bottom-color:gray;">Sala</td>
+                <td style="border-bottom-color:gray;">Computadora</td>
+                <td style="border-bottom-color:gray;">Fecha de inicio</td>
+                <td style="border-bottom-color:gray;"></td>
+            </tr>
+        </thead>
+        @foreach(DatosSesion sesion in Model)
+        {
+            <tr style="vertical-align:middle;">
+                <td>@sesion.matricula</td>
+                <td>@sesion.sala</td>
+                <td>@sesion.computadora</td>
+                <td><a style="margin-right:10px;">@sesion.fecha_inicio.ToString("dd/MM/yyyy")</a><a>@sesion.fecha_inicio.ToString("HH:mm")</a></td>
+                <td>
+                    <button class="btn btn-outline-danger flex" style="height:30px;" onclick="    FinalizarSesion(@sesion.matricula);">
+                        <i class="bi bi-x-circle" style="margin-right:5px;"></i>
+                        <lbl>Finalizar esta sesión</lbl>
+                    </button>
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <hr />
+    <div id="no" clas="flex" style="width:100%; text-align:center;">No hay sesiones activas por el momento</div>
+}
+
+<script>
+
+function FinalizarSesion(matricula) {
+    if (confirm('¿Está seguro de que desea finalizar la sesión del usuario con matricula '+matricula+'?')) {
+        $.ajax({
+            url: '/Sesiones/FinalizarSesion',
+            data: { id: matricula },
+            type: "POST",
+            success: function (response) {
+                if (response.success) {
+                    alert(response.responseText);
+                    RecargarSesiones();
+
+                    //Se cierra el modal finalizar en caso de estar abierto
+                    if ($('#ModalFinalizar').hasClass('show')) {
+                        $('#ModalFinalizar').modal('hide');
+                    }
+                } else {
+                    alert(response.responseText);
+                }                          
+            },
+            error: function (response) {
+                alert("Error");
+            }
+        });
+    }
+}
+
+</script>

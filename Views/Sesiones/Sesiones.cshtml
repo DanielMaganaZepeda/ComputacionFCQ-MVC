@@ -1,0 +1,110 @@
+﻿<!--Tabla de estado de salas-->
+<div class="card cards">
+    <div class="card-body">
+        <div class="header" style="margin-bottom:10px;">Estado de las salas</div>
+        <div id="tabla_salas"></div>
+    </div>
+</div>
+
+<!--Tabla de sesiones-->
+<div class="card cards">
+    <div class="card-body">
+        <div class="flex header" style="margin-bottom:10px;">
+            Listado de sesiones activas
+
+            <button class="btn btn-danger flex" style="margin-left: auto; margin-right:15px; height:30px;" onclick="FinalizarSesionTabla()">
+                <i class="bi bi-x-circle" style="margin-right: 10px; font-size: 14px;"></i>
+                Finalizar una sesión
+            </button>
+
+            <button class="flex btn btn-success" style="height:30px;" onclick="RecargarFormUsuario(); $('#ModalIniciar').modal('show')">
+                <i class="bi bi-triangle-fill" style="margin-right: 10px; font-size: 10px; transform: rotate(90deg);"></i>
+                Iniciar una sesión
+            </button>
+
+        </div>
+        <div id="tabla_sesiones"></div>
+    </div>
+</div>
+
+<!--Modal cerrar sesion-->
+<div class="modal fade" id="ModalFinalizar">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Finalizar una sesión</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="color:gray">
+                Matricula
+                <input id="tx_matricula" type="number" style="width:100%" class="form-control"/>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger flex" style="margin-left: auto; height:30px;" onclick="    FinalizarSesion($('#tx_matricula').val());">
+                    <i class="bi bi-x-circle" style="margin-right: 10px; font-size: 14px;"></i>
+                    Finalizar sesión
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal Iniciar Sesion-->
+<div class="modal fade" id="ModalIniciar">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Iniciar una sesión</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="FormUsuario"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success flex" style="margin-left: auto; height:30px;">
+                    <i class="bi bi-triangle-fill" style="margin-right: 10px; font-size: 10px; transform: rotate(90deg);"></i>
+                    Iniciar sesión
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+<script>
+
+RecargarSalas();
+setInterval(RecargarSalas, 60000);
+
+RecargarSesiones();
+setInterval(RecargarSalas, 30000);
+
+function FinalizarSesionTabla(){
+    if ($('#no').length) {
+        alert('No hay sesiones activas');
+        return;
+    }
+    $('#ModalFinalizar').modal('show');
+}
+
+function RecargarFormUsuario() {
+    $('#FormUsuario').load('/_FormUsuario/_FormUsuarioPartial')
+}
+
+function RecargarSalas() {
+    $('#tabla_salas').load('/_EstadoSalas/EstadoSalasPartial')
+}
+
+function RecargarSesiones() {
+    $('#tabla_sesiones').load('/Sesiones/TablaSesionesPartial')
+}
+
+$('#ModalFinalizar').on('hidden.bs.modal', function (e) {
+    $('#tx_matricula').val("")
+})
+
+$('#ModalFinalizar').on('shown.bs.modal', function (e) {
+    $('#tx_matricula').focus()
+})
+</script>
+}
