@@ -3,16 +3,9 @@
 <div style="color:gray; margin-bottom:15px; width:100%;">
     Matricula
     <div style="display:flex;">
-        @if (Model == null)
-        {
-            <input asp-for="Matricula" id="matricula" type="number" class="form-control" style="width:50%; margin-right:15px"/>   
-        }
-        else
-        {
-            <input asp-for="Matricula" id="matricula" type="number" class="form-control" style="width:50%; margin-right:15px" value="@Model.Matricula"/>
-        }
+        <input asp-for="Matricula" id="matricula" type="number" class="form-control" style="width:50%; margin-right:15px"/>   
 
-        <button class="flex btn btn-primary" style="width:50%" onclick="" asp-action="BuscarUsuario" formmethod="get" data="2">
+        <button class="flex btn btn-primary" style="width:50%" onclick="_FormUsuario_BuscarUsuario($('#matricula').val())">
             <i class="bi bi-search" style="font-size: 14px; margin-right: 7px;"></i>
             Buscar datos
         </button>
@@ -22,103 +15,58 @@
 <div style="color:gray; margin-bottom:15px; display:flex; width:100%;">
     <div style="width:50%; margin-right:15px;">
         Nombre(s)
-        @if (Model == null)
-        {
-            <input id="nombre" type="text" class="form-control" style="width:100%; margin-right:15px;"/>
-        }
-        else
-        {
-            <input id="nombre" type="text" class="form-control" style="width:100%; margin-right:15px;" value="@Model.Nombre"/>
-        }
+        <input asp-for="Nombre" id="nombre" type="text" class="form-control" style="width:100%; margin-right:15px;"/>
     </div>
 
     <div style="width:50%;">
         Apellidos
-        @if(Model==null)
-        {
-            <input id="apellidos" type="text" class="form-control" style="width:100%; margin-right:15px;"/>
-        }
-        else{
-            <input id="apellidos" type="text" class="form-control" style="width:100%; margin-right:15px;" value="@Model.Apellidos"/>
-        }
+        <input asp-for="Apellidos" id="apellidos" type="text" class="form-control" style="width:100%; margin-right:15px;"/>
     </div>
 </div>
 
 <div style="width:100%; color:gray; margin-bottom:15px;" id="dropdown">
     Carrera/Coordinación
     <div>
-        <select id="carrera" class="input" style="width:100%; height:35px;">
-            <option>Ingeniero Industrial Administrador</option>
-            <option>Ingeniero Químico</option>
-            <option>Ingeniería Ambiental</option>
-            <option>Licenciado en Química Industrial</option>
-            <option>Químico Farmacéutico Biólogo</option>
-            <option>Externo</option>
-        </select>
+        <select asp-for="CarreraId" asp-items="Model.Carreras" id="carrera" class="input" style="width:100%; height:35px;"></select>
     </div>
 </div>
 
 <div style="width:100%; color:gray; margin-bottom:15px;">
     Correo institucional
-    @if (Model == null)
-    {
-        <input id="correo" type="email" style="width:100%" class="form-control" />
-    }
-    else
-    {
-        <input id="correo" type="email" style="width:100%" class="form-control" value="@Model.Correo"/>
-    }
+    <input asp-for="Correo" id="correo" type="email" style="width:100%" class="form-control" />
 </div>
 
 <div style="display:flex;">
     <a style="margin-right: 10px; color:gray">Tipo de usuario:</a>
 
-    <input id="rad_alumno" type="radio" name="tipo" checked style="margin-right:3px;"/>
+    <input id="rad_alumno" type="radio" name="tipo" value="@Model.EsAlumno" checked="checked" style="margin-right:3px;"/>
     <a style="margin-right:10px;">Alumno</a>
 
-    @if (Model != null)
-    {
-        if (Model.EsAlumno==true)
-        {
-            <input id="rad_docente" type="radio" name="tipo" style="margin-right:3px;"/>
-        }
-        else
-        {
-            <input id="rad_docente" type="radio" name="tipo" style="margin-right:3px;" checked/>
-        }
-    }
-    else
-    {
-        <input id="rad_docente" type="radio" name="tipo" style="margin-right:3px;"/>
-    }
+    <input id="rad_docente" type="radio" name="tipo" value="@Model.EsAlumno" style="margin-right:3px;"/>
     <a style="margin-right:10px;">Docente</a>
 </div>
 
 <script>
-function BuscarUsuario(id){
+function _FormUsuario_BuscarUsuario(id){
     $.ajax({
         url: '/_FormUsuario/BuscarUsuario',
         data: { matricula: id },
         type: "GET",
         success: function (response) {
             if (response["responseText"]==null) {
-
                 $('#nombre').val(response["nombre"])
                 $('#apellidos').val(response["apellidos"])
                 $('#correo').val(response["correo"])
-                $('#carrera').prop("selectedIndex",response["carreraId"]-1)   
+                $('#carrera').prop("selectedIndex",response["carrera_id"]-1)   
 
-                if(response["esAlumno"]==true)
+                if(response["es_alumno"]==true)
                     $('#rad_alumno').prop("checked", true);
                 else
                     $('#rad_docente').prop("checked", true);
             }
             else {
-                alert(response["responseText"])
+                alert(response["responseText"]);
             }
-        },
-        error: function (response) {
-            alert('no '+response.responseText);
         }
     });
 }

@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using ComputacionFCQ_MVC.Models;
-using System.Timers;
-using ComputacionFCQ_MVC.Controllers.PV_Controllers;
 
 namespace ComputacionFCQ_MVC.Controllers
 {
@@ -20,81 +12,56 @@ namespace ComputacionFCQ_MVC.Controllers
             _context = context;
         }
 
-        public class DatosSesion
-        {
-            public DatosSesion(string matricula, int sala, int computadora,DateTime fecha_inicio)
-            {
-                this.matricula = matricula;
-                this.sala = sala;
-                this.computadora = computadora;
-                this.fecha_inicio = fecha_inicio;
-            }
-
-            public string matricula { set; get; }
-            public int sala { get; set; }
-            public int computadora { get; set; }
-            public DateTime fecha_inicio { get; set; }
-        }
-
         public IActionResult TablaSesionesPartial()
         {
-            List<DatosSesion> lista = new List<DatosSesion>();
-            
-            using (var db = new ComputacionFCQContext())
-            {
-                List<Sesion> sesiones = db.Sesions.Where(x => x.FechaFin.Value == null).ToList();
+            return PartialView("_TablaSesiones", Sesion.GetSesiones());
+        }
 
-                foreach (Sesion sesion in sesiones)
-                {
-                    lista.Add(new DatosSesion
-                        (db.Usuarios.Find(sesion.UsuarioId).Matricula,
-                        db.Computadoras.Find(sesion.ComputadoraId).SalaId,
-                        db.Computadoras.Find(sesion.ComputadoraId).Numero,
-                        sesion.FechaInicio.Value));
-                }
-            }
+        [HttpPost]
+        public IActionResult IniciarSesion(string matricula, string nombre, string apellidos, string correo, string carrera, bool es_alumno, int sala, int computadora, string programa)
+        {
+            //Validamos los datos
+            string? response = Usuario.ValidarDatos(matricula, nombre, apellidos, correo);
+            if (response != null) return Json(new { success = false, responseText = response });
 
-            return PartialView("_TablaSesiones", lista);
+            //Validamos que no este en una sesion activa
+            if (Usuario.EstaEnSesion(matricula)) return Json(new { success = false, responseText="El usuario ya se encuentra en una sesion activa"});
+
+            //Actualizamos los datos
+            Usuario.GuardarCambios(matricula, nombre, apellidos, correo, carrera, es_alumno);
+
+            //Abrimos sesion
+            Sesion.IniciarSesion(matricula, sala, computadora, programa);
+            return Json(new { success = true });
         }
 
         [HttpGet]
         public IActionResult ActualizarSalas()
         {
-            return Json(Models.Sala.GetSalasDisponibles());
+            return Json(Sala.GetSalasDisponibles());
         }
 
         [HttpGet]
         public IActionResult ActualizarComputadoras(int sala)
         {
-            return Json(Models.Sala.GetComputadorasPorSala(sala));
+            return Json(Sala.GetComputadorasPorSala(sala));
         }
 
         [HttpGet]
         public IActionResult ActualizarProgramas(int sala)
         {
-            return Json(Models.Sala.GetProgramasPorSala(sala));
+            return Json(Sala.GetProgramasPorSala(sala));
         }
 
         [HttpPost]
         public IActionResult FinalizarSesion(string id)
         {
-            if (id == null) return Json(new { success = false, responseText = "Debe introducir una matricula valida" });
-            foreach (char c in id)
-                if (!char.IsDigit(c)) return Json(new { success = false, responseText = "Debe introducir una matricula valida" });
+            string? response = Sesion.FinalizarSesion(id);
 
-            using (var db = new ComputacionFCQContext())
-            {
-                if (db.Sesions.Where(x => x.FechaFin.Value == null && x.UsuarioId == db.Usuarios.Where(y => y.Matricula == id).First().Id).FirstOrDefault()!=null)
-                {
-                    db.Sesions.Where(x => x.FechaFin.Value == null && x.UsuarioId == db.Usuarios.Where(y => y.Matricula == id).First().Id).First().FechaFin = DateTime.Now;
-                    db.SaveChanges();
-                    return Json(new { success = true, responseText = $"Se ha finalizado la sesion del usuario con la matricula {id}" });
-                }
-                else
-                {
-                    return Json(new { success = false, responseText = "El usuario no se encuentra en una sesion activa" });
-                }
-            }
+            if (response == null)
+                return Json(new { success = true });
+            else
+                return Json(new { success = false, responseText = response });
         }
 
         public IActionResult Sesiones()

@@ -42,9 +42,16 @@ namespace ComputacionFCQ_MVC.Models
 
         public static List<string> GetProgramasPorSala(int sala)
         {
-            using (var db = new ComputacionFCQContext())
+            if(sala!=0)
             {
-                return db.Salas.Find(sala).Programas.Select(x=>x.Nombre).ToList();
+                using (var db = new ComputacionFCQContext())
+                {
+                    return db.Salas.Find(sala).Programas.Select(x => x.Nombre).ToList();
+                }
+            }
+            else
+            {
+                return new List<string>();
             }
         }
     }
