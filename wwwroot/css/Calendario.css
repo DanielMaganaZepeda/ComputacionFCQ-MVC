@@ -1,0 +1,39 @@
+﻿.cell {
+    border-right: solid 1px lightgray;
+}
+
+.cell-header {
+    font-weight: 500;
+    border-collapse: collapse;
+    color: #000000;
+    text-align: center;
+    border: 1px solid lightgray;
+    background: whitesmoke;
+}
+
+.cell-hora {
+    border-collapse: collapse;
+    text-align: center;
+    width: 150px;
+    border: 1px solid lightgray;
+    background: whitesmoke;
+}
+
+.cell-content {
+    border-collapse: collapse;
+    border: 1px solid rgb(230,230,230);
+    padding: 0;
+    position: relative;
+}
+
+.reserv {
+    vertical-align: top;
+    text-align: left;
+    background: lavender;
+    width: 100%;
+    border: 0;
+}
+
+    .reserv:hover {
+        filter: brightness(95%);
+    }

@@ -1,0 +1,112 @@
+﻿@using ComputacionFCQ_MVC.Models
+
+<div style="display:flex; align-items:center;">
+
+    <div>@parametro</div>
+
+    <div class="header" style="margin-right:10px;">@meses[fecha.Month-1]</div>
+    <div class="header">@fecha.Year</div>
+
+    <button class="input" style="margin-left:auto; height:30px;">
+        <i class="bi bi-arrow-left" style="margin-right: 5px;"></i>
+        Semana anterior
+    </button>
+
+    <select onchange="@DoStuff" class="input" style="margin-left: 5px; margin-right:5px; height:30px;">
+        <option>Sala 1</option>
+        <option>Sala 2</option>
+        <option>Sala 3</option>
+        <option>Sala 4</option>
+        <option>Sala 5</option>
+    </select>
+
+    <button class="input" style="height:30px;">
+        Semana siguiente
+        <i class="bi bi-arrow-right" style="margin-left: 5px;"></i>
+    </button>
+
+</div>
+
+<div class="table-responsive" style="margin-top:15px;">
+    <table cellpadding="1" cellspacing="1" style="table-layout:fixed; width:100%">
+        <thead>
+            <td class="cell-header">Horario</td>
+            @for(int i=0; i<6; i++)
+            {
+                <td class="cell-header">
+                    @dias[i] @fecha.AddDays(i).Day
+                </td>
+            }
+        </thead>
+        <tbody>
+            @for(int hora=7; hora<22; hora++)
+            {
+                <tr>
+                @for(int dia=0; dia<7; dia++)
+                {
+                    @if (dia == 0)
+                    {
+                        <td class="cell-hora">@(hora):00 - @(hora+1):00</td>
+                    }
+                    else
+                    {
+                        @if(reservaciones.Where(x=> ((int)x.FechaInicio.Value.DayOfWeek)==dia && (x.FechaInicio.Value.Hour<=hora && hora<x.FechaFin.Value.Hour)).Count()>0)
+                        {
+                            <td class="cell-content">
+                                <div>test</div>
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="cell-content"></td>
+                        }
+                    }
+                }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private static List<string> meses = new List<string> { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
+    private static List<string> dias = new List<string> { "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado" };
+    private static DateTime fecha = IniciarlizarFecha();
+    private static List<Reservacion> reservaciones = GetReservacionesSemana(1, fecha);
+
+    [Parameter]
+    public string parametro { get; set; }
+}
+
+@functions{
+    void DoStuff(ChangeEventArgs e)
+    {
+        Console.WriteLine(e.Value.ToString());
+        
+    }
+
+    private static DateTime IniciarlizarFecha()
+    {
+        DateTime fecha = DateTime.Today;
+
+        if (fecha.DayOfWeek == DayOfWeek.Sunday) return fecha.AddDays(1);
+
+        while (fecha.DayOfWeek != DayOfWeek.Monday)
+            fecha = fecha.Subtract(new TimeSpan(1, 0, 0, 0));
+
+        return fecha;
+    }
+
+    private static List<Reservacion> GetReservacionesSemana(int sala, DateTime dt)
+    {
+        using (var db = new ComputacionFCQContext())
+        {
+            var lista = db.Reservacions.Where(x => x.Activa == true && x.SalaId == sala && x.FechaInicio > dt && x.FechaInicio < dt.AddDays(6)).ToList();
+            Console.WriteLine(lista.Count);
+            if (lista != null)
+                return lista;
+            else
+                return new List<Reservacion>();
+        }
+    }
+}

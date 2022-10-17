@@ -1,0 +1,53 @@
+﻿<div style="display:flex; align-items:center; margin-bottom:15px;">
+    <div id="mes" class="header" style="margin-right:10px;"></div>
+    <div id="ano" class="header"></div>
+
+    <button class="input" style="margin-left:auto; height:30px;" onclick="dt.setDate(dt.getDate() - 7); ActualizarSemana()">
+        <i class="bi bi-arrow-left" style="margin-right: 5px;"></i>
+        Semana anterior
+    </button>
+
+    <select id="sala" class="input" style="margin-left: 5px; margin-right:5px; height:30px;" onchange="    ActualizarSemana();">
+        <option>Sala 1</option>
+        <option>Sala 2</option>
+        <option>Sala 3</option>
+        <option>Sala 4</option>
+        <option>Sala 5</option>
+    </select>
+
+    <button class="input" style="height:30px;" onclick="dt.setDate(dt.getDate() + 7); ActualizarSemana()">
+        Semana siguiente
+        <i class="bi bi-arrow-right" style="margin-left: 5px;"></i>
+    </button>
+</div>
+
+<div class="table-responsive">
+    <table cellpadding="1" cellspacing="1" style="table-layout:fixed; width:100%">
+        <thead>
+            <tr>
+                <td class="cell-header">Horario</td>
+                <td id="Lu" class="cell-header"></td>
+                <td id="Ma" class="cell-header"></td>
+                <td id="Mi" class="cell-header"></td>
+                <td id="Ju" class="cell-header"></td>
+                <td id="Vi" class="cell-header"></td>
+                <td id="Sa" class="cell-header"></td>
+            </tr>
+        </thead>
+        <tbody>
+            @for(int hora=7; hora<=21; hora++)
+            {
+                <tr>
+                    <td class="cell-hora">@(hora):00 - @(hora+1):00</td>
+
+                    @foreach(string dia in (new List<string>{"Lu", "Ma", "Mi", "Ju", "Vi", "Sa"}))
+                    {
+                        <td id="@(dia)@hora" class="cell-content"></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script src="~/js/_Calendario.js"></script>
