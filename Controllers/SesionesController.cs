@@ -25,7 +25,7 @@ namespace ComputacionFCQ_MVC.Controllers
             if (response != null) return Json(new { success = false, responseText = response });
 
             //Validamos que no este en una sesion activa
-            if (Usuario.EstaEnSesion(matricula)) return Json(new { success = false, responseText="El usuario ya se encuentra en una sesion activa"});
+            if (Usuario.EstaEnSesion(matricula)) return Json(new { success = false, responseText = "El usuario ya se encuentra en una sesion activa" });
 
             //Actualizamos los datos
             Usuario.GuardarCambios(matricula, nombre, apellidos, correo, carrera, es_alumno);

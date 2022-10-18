@@ -1,1 +1,63 @@
-﻿<div>Partial</div>
+﻿<!--Este archivo HTML esta destinado exclusivamente para contener el componente de Calendario y que pueda ser invocado en otras paginas usando JQuery.Load()-->
+<!--Para que funcione tiene que ser incluido con sus scripts-->
+@model ComputacionFCQ_MVC.Models.Fecha
+
+<div class="dropdown" id="@Model.id">
+    <!--Boton-->
+    <button class="btn input" id="@(Model.id)_btn" data-bs-toggle="dropdown" aria-expanded="false" style=" display:flex; width:100%; text-align:left; align-items:center;">
+        <div id="@(Model.id)_value">Seleccionar fecha</div>
+        <i class="bi bi-caret-down-fill" style="font-size:12px; margin-left:auto;"></i>
+    </button>
+
+    <!--Menu desplegable-->
+    <div class="dropdown-menu" style="padding: 10px; width: 250px; box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+        <div style="display:flex; width:100%; justify-content:center;">
+            <button class="flex flecha" style="margin-right:auto;" onclick="ActualizarTabla('@Model.id','prev');"><i class="bi bi-caret-left-fill"></i></button>
+            <lbl id="@(Model.id)_mes" style="margin-right:10px;"></lbl>
+            <lbl id="@(Model.id)_ano"></lbl>
+            <button class="flex flecha" style="margin-left:auto" onclick="ActualizarTabla('@Model.id','next');"><i class="bi bi-caret-right-fill"></i></button>
+        </div>
+
+        <table style="width:100%; table-layout:fixed;">
+            <thead>
+                <tr style="background-color:lightgray">
+                    <td style="text-align:center;">Do</td>
+                    <td style="text-align:center;">Lu</td>
+                    <td style="text-align:center;">Ma</td>
+                    <td style="text-align:center;">Mi</td>
+                    <td style="text-align:center;">Ju</td>
+                    <td style="text-align:center;">Vi</td>
+                    <td style="text-align:center;">Sa</td>
+                </tr>
+            </thead>
+            <tbody id="@(Model.id)_body">
+                <tr><td id="c1"></td><td id="c2"></td><td id="c3"></td><td id="c4"></td><td id="c5"></td><td id="c6"></td><td id="c7"></td></tr>
+                <tr><td id="c8"></td><td id="c9"></td><td id="c10"></td><td id="c11"></td><td id="c12"></td><td id="c13"></td><td id="c14"></td></tr>
+                <tr><td id="c15"></td><td id="c16"></td><td id="c17"></td><td id="c18"></td><td id="c19"></td><td id="c20"></td><td id="c21"></td></tr>
+                <tr><td id="c22"></td><td id="c23"></td><td id="c24"></td><td id="c25"></td><td id="c26"></td><td id="c27"></td><td id="c28"></td></tr>
+                <tr><td id="c29"></td><td id="c30"></td><td id="c31"></td><td id="c32"></td><td id="c33"></td><td id="c34"></td><td id="c35"></td></tr>
+                <tr><td id="c36"></td><td id="c37"></td><td id="c38"></td><td id="c39"></td><td id="c40"></td><td id="c41"></td><td id="c42"></td></tr>
+            </tbody>
+        </table>
+
+        <hr style="margin-bottom:10px; margin-top:10px;"/>
+        
+        @if (Model.Nombre == "inicio")
+        {
+            <button class="flex btn btn-primary" style="width:100%; height:30px; margin-bottom:5px;" 
+            onclick="SetFecha('@Model.id','@Model.Fecha1.Value.ToShortDateString()')" >Inicio del semestre</button >
+        }
+        else
+        {
+            <button class="flex btn btn-primary" style="width:100%; height:30px; margin-bottom:5px;" 
+            onclick="SetFecha('@Model.id','@Model.Fecha1.Value.ToShortDateString()')" >Final del semestre</button >
+        }
+
+        <button class="flex btn btn-secondary" id="@(Model.id)_borrar" style="width:100%; height:30px;"\
+                onclick="Borrar('@Model.id');">Borrar fecha</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    Inicializar('@Model.id');
+</script>

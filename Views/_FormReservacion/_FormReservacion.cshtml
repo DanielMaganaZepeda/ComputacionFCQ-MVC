@@ -1,0 +1,133 @@
+﻿<div class="modal-header">
+    <h1 id="titulo" class="modal-title fs-5">Hacer una reservacion</h1>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body" style="display:flex;">
+    <!--Panel usuario-->
+    <div id="form_usuario" style="width:40%"></div>
+    <div class="vr" style="margin-left: 15px; margin-right: 15px;"></div>
+
+    <!--Panel de evento-->
+    <div style="width: 60%">
+        <!--Curso-->
+        <div style="color: gray; margin-bottom:15px;">
+            Curso/Materia
+            <input id="curso" type="text" class="form-control" style="width:100%;"/>   
+        </div>
+
+        <!--Sala / Cant Alumnos / Programa-->
+        <div style="color: gray; display:flex; margin-bottom:43px;">
+            <div style="width: 50px; margin-right:15px;">
+                Sala
+                <select id="sala" name="sala" class="input" onchange="ActualizarProgramas()">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+
+            <div style="margin-right:15px; width:160px;">
+                Cant. Alumnos
+                <input id="cantidad" type="number" class="form-control" style="width:100%;"/>   
+            </div>
+
+            <div style="width:100%">
+                Programa
+                <select id="programa" class="input" style="width:100%;"></select>
+            </div>
+        </div>
+
+        <!--Tipo de evento-->
+        <div style="display:block; height:35px; margin-bottom:15px;">
+            <a style="color: gray">Tipo de reservacion:</a>
+            <input id="rad_unica" type="radio" name="tipo_resv" style="margin-left:10px;" onchange="RadUnica_Checked()"/>
+            Única
+            <input id="rad_frecuencial" type="radio" name="tipo_resv" style="margin-left:10px;" onchange="RadFrecuencial_Checked()"/>
+            Frecuencial
+        </div>
+
+        <!--Desde Hasta-->
+        <div style="width:100%; display:flex; color:gray;">
+            <div style="width:50%; margin-right:15px;">
+                Desde
+                <div id="cargar_desde" style="width:100%;"></div>
+            </div>
+
+            <div style="width:50%; display:flex;">
+                <div id="div_hasta" style="width:100%;">
+                    Hasta
+                    <div id="cargar_hasta" style="width:100%;"></div>
+                </div>
+
+                <div id="div_horas" style="display:flex;">
+                    <div style="width:50%; margin-right:15px;">
+                        Hora de inicio
+                        <select id="hora_inicio" class="input" style="width:100%; height:35px;">
+                            @for(int hora=7; hora<=21; hora++)
+                            {
+                                <option value="@hora">@hora.ToString("D2"):00</option>
+                            }
+                        </select>
+                    </div>
+                    <div style="width:50%;">
+                        Hora de fin
+                        <select id="hora_fin" class="input" style="width:100%; height:35px;">
+                            @for(int hora=8; hora<=22; hora++)
+                            {
+                                <option value="@hora">@hora.ToString("D2"):00</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--dias-->
+        <div id="div_dias" style="color: gray; margin-top:15px; width:100%;">
+
+            <div style="display:flex;">
+                <div style="width:50%; margin-right:30px;">Dias de frecuencia</div>
+                <div style="width:25%; margin-right:15px;">Hora de inicio</div>
+                <div style="width:25%">Hora de fin</div>
+            </div>
+
+            @foreach(string dia in new List<string>{"Lunes", "Martes", "Miercoles", "Jueves", "Viernes","Sabado"})
+            {
+                <div style="display:flex; align-items:center; height:30px; margin-bottom:5px; width:100%;">
+                    <div style="width: 50%; align-items: center; display: flex; margin-right: 15px; margin-bottom: 5px;">
+                        <input type="checkbox" id="cb_@dia.Substring(0,2)" style="margin-right:3px;" onchange="Cb_Checked(this.id)"/>
+                        <a>@dia</a>
+                    </div>
+
+                    <div style="width:50%; display:flex;">
+                        <select class="input" id="hi_@dia.Substring(0,2)" style="width: 50%; height:30px; margin-right:15px;" disabled>
+                            @for(int hora=7; hora<=21; hora++)
+                            {
+                                <option value="@hora">@hora.ToString("D2"):00</option>
+                            }
+                        </select>
+
+                        <select class="input" id="hf_@dia.Substring(0,2)" style="width: 50%; height:30px" disabled>
+                            @for(int hora=8; hora<=22; hora++)
+                            {
+                                <option value="@hora">@hora.ToString("D2"):00</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+$('#div_hasta').hide();
+$('#div_dias').hide();
+
+$('#form_usuario').load('/_FormUsuario/_FormUsuarioPartial');
+$('#cargar_desde').load('/_DatePicker/_DatePickerPartial?id=desde&tipo=desde');
+$('#cargar_hasta').load('/_DatePicker/_DatePickerPartial?id=hasta&tipo=hasta');
+</script>

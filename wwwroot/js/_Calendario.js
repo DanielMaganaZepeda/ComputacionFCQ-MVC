@@ -4,7 +4,6 @@ const abr = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa']
 var dt = InicializarFecha();
 
 ActualizarSemana();
-ActualizarBarra();
 var timer = setInterval(ActualizarBarra, 60000);
 
 function InicializarFecha() {
@@ -22,24 +21,30 @@ function InicializarFecha() {
 
 function ActualizarBarra() {
     var fecha_lim = new Date(dt)
-    if (!((dt <= new Date() < fecha_lim) && new Date().getDay() != 0)) return;
+    fecha_lim.setDate(fecha_lim.getDate() + 6)
 
-    if ($('#barra')) $('#barra').remove();
+    $('#barra').remove();
+    if (!(((dt.getTime() <= new Date().getTime()) && (new Date().getTime() < fecha_lim.getTime())) && (new Date().getDay() != 0)))
+        return;
 
-    if (dt.getHours() < 7 || dt.getHours() > 21) {
-        if (dt.getHours() < 7)
+    if (new Date().getHours() < 7 || new Date().getHours() > 21) {
+        if (new Date().getHours() < 7) {
             var template = `<div id="barra" style="display:block; position: absolute; background-color:red; height:2px; width:100%; top: 0%"></div>`;
-        else
-            var template = `<div id="barra" style="display:block; position: absolute; background-color:red; height:2px; width:100%; top: 100%;"></div>`;
+            $(`#${abr[new Date().getDay() - 1]}7`).append(template);
+        }
+        else {
+            var template = `<div id="barra" style="display:block; position: absolute; background-color:red; height:2px; width:100%; top: calc(100% - 2px);"></div>`;
+            $(`#${abr[new Date().getDay() - 1]}21`).append(template);
+        }
     }
-    else
-        var template = `<div id="barra" style="display:block; position: absolute; background-color:red; height:2px; width:100%; top: calc(${(new Date().getMinutes() / 0.6)}%);"></div>`;
-
-    $(`#${abr[new Date().getDay() - 1] + new Date().getHours()}`).append(template);
+    else {
+        var template = `<div id="barra" style="display:block; position: absolute; background-color:red; height:2px; width:100%; top: ${(parseFloat(new Date().getMinutes() / 0.6))}%;"></div>`;
+        $(`#${abr[new Date().getDay() - 1] + new Date().getHours()}`).append(template);
+    }
 }
 
 function ActualizarSemana() {
-    var sala_id = $('#sala').prop('selectedIndex') == undefined ? 1 : $('#sala').prop('selectedIndex') + 1;
+    var sala_id = $('#calendario_sala').prop('selectedIndex') == undefined ? 1 : $('#calendario_sala').prop('selectedIndex') + 1;
 
     $.ajax({
         url: '/_Calendario/GetReservaciones',

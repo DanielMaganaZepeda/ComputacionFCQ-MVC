@@ -1,0 +1,49 @@
+﻿body {
+}
+
+.flex{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.calendario-seleccionada {
+    text-align: center;
+    border: none;
+    width: 100%;
+    height: 100%;
+    background-color: dimgray;
+    color:white;
+    border-radius:50%;
+
+    margin: 0;
+}
+
+.calendario-fecha {
+    text-align: center;
+    border: none;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    margin: 0;
+}
+.calendario-fecha:hover{
+    background-color:lightgray;
+}
+
+.calendario-cell{
+    padding:0;
+    border: solid 1px lightgray;
+    height:30px;
+}
+
+.flecha{
+    font-size:18px;
+    background-color:white;
+    border: 0;
+    border-radius:50px;
+}
+
+.flecha:hover{
+    background-color:lightgray;
+}

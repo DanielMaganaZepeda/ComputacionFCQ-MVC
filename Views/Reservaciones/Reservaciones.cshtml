@@ -3,10 +3,34 @@
     </div>
 </card>
 
-@section Scripts{
-    <link rel="stylesheet" href="~/css/Calendario.css"/>
+<button onclick="AbrirModal()">Abrir modal</button>
 
-    <script>
-        $('#calendario').load('/_Calendario/_CalendarioPartial');
-    </script>
+<!--Modal Iniciar Sesion-->
+<div class="modal fade" id="ModalReservacion">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width: 900px; left: calc((100% - 900px) / 2);">
+            <div id="FormReservacion"></div>
+            <div class="modal-footer">
+                <button class="btn btn-success flex" style="margin-left: auto; height:30px;" onclick="IniciarSesion()">
+                    <i class="bi bi-triangle-fill" style="margin-right: 10px; font-size: 10px; transform: rotate(90deg);"></i>
+                    Iniciar sesión
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+<link rel="stylesheet" href="~/css/Calendario.css"/>
+<link rel="stylesheet" href="~/css/_DatePicker.css"/>
+<script src="~/js/_DatePicker.js"></script>
+<script src="~/js/_FormReservacion.js"></script>
+<script src="~/js/_FormUsuario.js"></script>
+<script src="~/js/Reservaciones.js"></script>
+
+<script>
+$('#calendario').load('/_Calendario/_CalendarioPartial');
+$('#FormReservacion').load('/_FormReservacion/_FormReservacionPartial');
+
+</script>
 }
