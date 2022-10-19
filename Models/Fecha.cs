@@ -18,6 +18,12 @@ namespace ComputacionFCQ_MVC.Models
             return dias[dia - 1];
         }
 
+        public static int GetMes(string mes)
+        {
+            List<string> meses = new List<string> { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
+            return meses.IndexOf(mes)+1;
+        }
+
         public static string GetMes(int mes)
         {
             List<string> meses = new List<string> { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };

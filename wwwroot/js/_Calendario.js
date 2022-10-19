@@ -51,6 +51,7 @@ function ActualizarSemana() {
         data: { sala: sala_id, dt: dt.toDateString() },
         type: "GET",
         success: function (response) {
+            console.log(response);
             $('button.' + 'reserv').remove();
             for (reservacion of response) {
                 for (id of reservacion["targetIds"]) {

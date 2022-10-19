@@ -123,6 +123,23 @@
     </div>
 </div>
 
+<div class="modal-footer">
+    <button id="btn_evento" class="btn btn-danger flex" style="margin-left: auto; height:30px;" onclick="">
+        <i class="bi bi-x-circle" style="margin-right: 10px; font-size: 14px; transform: rotate(90deg);"></i>
+        Cancelar este evento
+    </button>
+
+    <button id="btn_frecuencia" class="btn btn-danger flex" style="margin-left: auto; height:30px; margin-left:15px;" onclick="">
+        <i class="bi bi-x-octagon" style="margin-right: 10px; font-size: 14px; transform: rotate(90deg);"></i>
+        Cancelar esta frecuencia
+    </button>
+
+    <button id="btn_agregar" class="btn btn-success flex" style="margin-left: auto; height:30px; margin-left:15px;" onclick="AgregarReservacion()">
+        <i class="bi bi-triangle-fill" style="margin-right: 10px; font-size: 10px; transform: rotate(90deg);"></i>
+        Agregar reservación
+    </button>
+</div>
+
 <script>
 $('#div_hasta').hide();
 $('#div_dias').hide();

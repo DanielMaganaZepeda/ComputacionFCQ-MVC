@@ -30,3 +30,8 @@ function _FormUsuario_LimpiarForm() {
     $('#carrera').prop("selectedIndex", 0);
     $('#rad_alumno').prop("checked", true);
 }
+
+//ESTA FUNCION ESTA PENDIENTE EN EL CONTROLLER Y AQUI
+function _FormUsuario_ValidarDatos(){
+    return true;
+}

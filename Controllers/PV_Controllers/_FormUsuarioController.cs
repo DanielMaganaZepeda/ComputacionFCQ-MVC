@@ -29,8 +29,8 @@ namespace ComputacionFCQ_MVC.Controllers.PV_Controllers
             Usuario? usuario = Usuario.GetUsuarioPorMatricula(matricula);
 
             if (usuario != null)
-                return Json(new { matricula=usuario.Matricula, nombre=usuario.Nombre, apellidos=usuario.Apellidos, correo=usuario.Correo,
-                                  carrera_id=usuario.CarreraId, es_alumno=usuario.EsAlumno });
+                return Json(new { matricula = usuario.Matricula, nombre = usuario.Nombre, apellidos = usuario.Apellidos, correo = usuario.Correo,
+                    carrera_id = usuario.CarreraId, es_alumno = usuario.EsAlumno });
             else
                 return Json(new { responseText = "No se encontraron datos del usuario con la matricula introducida" });
         }

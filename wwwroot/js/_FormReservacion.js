@@ -1,4 +1,54 @@
-﻿function _FormReservacion_LimpiarForm() {
+﻿function AgregarReservacion() {
+    if ($('#rad_unica').prop('checked') == true) {
+        $.ajax({
+            url: '/_FormReservacion/AgregarReservacionUnica',
+            data: {
+                matricula: $('#matricula').val(), nombre: $('#nombre').val(), apellidos: $('#apellidos').val(), correo: $('#correo').val(), carrera: $('#carrera option:selected').text(),
+                curso: $('#curso').val(), cantidad: $('#cantidad').val(), sala_id: $('#sala').val(),
+                fecha: $('#desde_value').html(), hi: $('#hora_inicio').val(), hf: $('#hora_fin').val()
+            },
+            type: "POST",
+            success: function (response) {
+                if (response["success"] == true) {
+                    alert('valida');
+                }
+                else {
+                    alert(response['responseText']);
+                }
+            }
+        });
+    }
+    else {
+        var dias = [];
+        var DayOfWeek = 1;
+        for (dia of abr) {
+            if ($(`#cb_${dia}`).prop('checked') == true) {
+                dias.push(`${DayOfWeek}-${$(`#hi_${dia}`).val()}-${$(`#hf_${dia}`).val()}`);
+            }
+            DayOfWeek++;
+        }
+
+        $.ajax({
+            url: '/_FormReservacion/AgregarReservacionFrecuencial',
+            data: {
+                matricula: $('#matricula').val(), nombre: $('#nombre').val(), apellidos: $('#apellidos').val(), correo: $('#correo').val(), carrera: $('#carrera option:selected').text(),
+                curso: $('#curso').val(), cantidad: $('#cantidad').val(), sala_id: $('#sala').val(),
+                periodo_inicio: $('#desde_value').html(), periodo_fin: $('#hasta_value').html(), dias
+            },
+            type: "POST",
+            success: function (response) {
+                if (response["success"] == true) {
+                    alert('valida');
+                }
+                else {
+                    alert(response['responseText']);
+                }
+            }
+        });
+    }
+}
+
+function _FormReservacion_LimpiarForm() {
     $('#curso').val('');
     $('#cantidad').val('');
     $('#sala').prop('selectedIndex', 0);
@@ -11,6 +61,10 @@
     ActualizarTabla('hasta');
     $(`#hora_inicio`).prop('selectedIndex', 0);
     $(`#hora_fin`).prop('selectedIndex', 0);
+
+    $('#btn_evento').hide();
+    $('#btn_frecuencia').hide();
+    $('#btn_agregar').show();
 
     for (dia of abr) {
         $(`#cb_${dia}`).prop('checked', false);
@@ -82,6 +136,7 @@ function ActualizarProgramasLimpio() {
     $('#programa').prop('selectedIndex', 0);
 }
 
+
 function ActualizarProgramas() {
     var sala_id = $('#sala').prop('selectedIndex') == undefined ? 1 : $('#sala').val();
 
@@ -116,10 +171,15 @@ function ActualizarProgramas() {
 function _FormReservacion_CargarDatos(response) {
     _FormReservacion_ComponentesDisabled(true);
     _FormUsuario_BuscarUsuario(response['matricula']);
+
+    $('#btn_evento').show();
+    $('#btn_frecuenia').show();
+
     $('#matricula').val(response['matricula']);
     $('#curso').val(response['curso']);
     $('#sala').prop('selectedIndex', response['sala_id'] - 1);
     $('#cantidad').val(response['cantidad_alumnos']);
+    $('#btn_agregar').hide();
 
     $('#programa').empty();
     $('#programa').append($('<option>', {
@@ -131,7 +191,16 @@ function _FormReservacion_CargarDatos(response) {
         $(`#hi_${dia}`).val('');
         $(`#hf_${dia}`).val('');
     }
-    
+
+    var dt = new Date(response['fecha'].split('/')[2] + '-' +
+        parseInt(getMes(response['fecha'].split('/')[1])).toLocaleString('en-US', { minimumIntegerDigits: 2 }) + '-' +
+        parseInt(response['fecha'].split('/')[0]).toLocaleString('en-US', { minimumIntegerDigits: 2 }) + 'T' +
+        parseInt(response['hi']).toLocaleString('en-US', { minimumIntegerDigits: 2 }) + ':00:00');
+
+
+    if (dt.getTime() <= new Date().getTime())
+        $('#btn_evento').hide();
+
     if (response['es_unica'] == true) {
         $('#titulo').html(`Detalles de la reservación "${response['curso']}"`);
 
@@ -142,10 +211,11 @@ function _FormReservacion_CargarDatos(response) {
 
         $(`#hora_inicio`).val(response['hi']);
         $(`#hora_fin`).val(response['hf']);
+
+        $('#btn_frecuencia').hide();
+
     }
     else {
-        var dt = new Date(response['fecha'].split('-')[2] + '-' + response['fecha'].split('-')[1] + '-' + response['fecha'].split('-')[0]);
-
         $('#titulo').html(`Detalles de la reservación "${response["curso"]}" - ${dias[dt.getDay()]} ${response['fecha']} - \n 
         (${response['totales']} totales, ${response['restantes']} futuras)`);
 
@@ -154,6 +224,9 @@ function _FormReservacion_CargarDatos(response) {
 
         $('#desde_value').html(response['periodo_inicio']);
         $('#hasta_value').html(response['periodo_fin']);
+
+        if (parseInt(response['restantes']) == 0)
+            $('#btn_frecuenia').hide();
 
         for (var dia of response["dias"]) {
             $(`#cb_${dia['id']}`).prop('checked', true);

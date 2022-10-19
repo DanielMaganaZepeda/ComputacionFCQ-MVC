@@ -4,25 +4,45 @@ namespace ComputacionFCQ_MVC.Models
 {
     public class Validaciones
     {
+        public static bool Curso(string str)
+        {
+            if (str == "" || str == null) return false;
+
+            foreach (char c in str)
+                if (!(char.IsLetterOrDigit(c) || c==' '))
+                    return false;
+
+            if (str.Length > 100) return false;
+
+            return true;
+        }
+
         public static bool Entero(string str)
         {
             if (str == "" || str == null) return false;
+
             foreach (char c in str)
                 if (!char.IsDigit(c))
                     return false;
+
             if (str.Length > 100) return false;
+
             return true;
         }
 
         public static bool Nombre(string str)
         {
             if (str == "" || str == null) return false;
+
             if (str.Contains("  ")) return false;
             foreach (char c in str)
                 if (!(char.IsLetter(c) || c == ' '))
                     return false;
+
             if (str.Count(x => x == ' ') == str.Length) return false;
+
             if (str.Length > 100) return false;
+
             return true;
         }
 

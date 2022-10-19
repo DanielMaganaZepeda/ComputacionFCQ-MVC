@@ -4,30 +4,6 @@ setInterval(RecargarSalas, 60000);
 RecargarSesiones();
 setInterval(RecargarSalas, 30000);
 
-function IniciarSesion() {
-    console.log(_FormUsuario_ValidarDatos());
-    if (_FormUsuario_ValidarDatos()) {
-        $.ajax({
-            url: '/Sesiones/IniciarSesion',
-            data: { matricula: $('#matricula').val(), sala: $('#sala').val(), computadora: $('#computadora').val(), programa: $('#programa').val() },
-            type: "POST",
-            success: function (response) {
-                if (response["success"] == true) {
-                    RecargarSesiones();
-                    alert('La sesión ha sido iniciada con exito');
-                    $('#ModalIniciar').modal('hide');
-                }
-                else {
-                    alert(response["responseText"]);
-                }
-            }
-        });
-    }
-    else {
-        console.log('?');
-    }
-}
-
 function FinalizarSesion(matricula) {
     $.ajax({
         url: '/Sesiones/FinalizarSesion',
