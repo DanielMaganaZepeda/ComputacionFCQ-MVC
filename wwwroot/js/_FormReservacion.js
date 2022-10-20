@@ -3,14 +3,16 @@
         $.ajax({
             url: '/_FormReservacion/AgregarReservacionUnica',
             data: {
-                matricula: $('#matricula').val(), nombre: $('#nombre').val(), apellidos: $('#apellidos').val(), correo: $('#correo').val(), carrera: $('#carrera option:selected').text(),
-                curso: $('#curso').val(), cantidad: $('#cantidad').val(), sala_id: $('#sala').val(),
-                fecha: $('#desde_value').html(), hi: $('#hora_inicio').val(), hf: $('#hora_fin').val()
+                matricula: $('#matricula').val(), nombre: $('#nombre').val(), apellidos: $('#apellidos').val(), correo: $('#correo').val(),
+                carrera: $('#carrera option:selected').text(), curso: $('#curso').val(), cantidad: $('#cantidad').val(), sala_id: $('#sala').val(),
+                fecha: $('#desde_value').html(), hi: $('#hora_inicio').val(), hf: $('#hora_fin').val(), programa: $('#programa').val()
             },
             type: "POST",
             success: function (response) {
                 if (response["success"] == true) {
-                    alert('valida');
+                    ActualizarSemana();
+                    alert('La reservación se ha creado con éxito');
+                    $('#ModalReservacion').modal('hide');
                 }
                 else {
                     alert(response['responseText']);
@@ -31,18 +33,54 @@
         $.ajax({
             url: '/_FormReservacion/AgregarReservacionFrecuencial',
             data: {
-                matricula: $('#matricula').val(), nombre: $('#nombre').val(), apellidos: $('#apellidos').val(), correo: $('#correo').val(), carrera: $('#carrera option:selected').text(),
-                curso: $('#curso').val(), cantidad: $('#cantidad').val(), sala_id: $('#sala').val(),
-                periodo_inicio: $('#desde_value').html(), periodo_fin: $('#hasta_value').html(), dias
+                matricula: $('#matricula').val(), nombre: $('#nombre').val(), apellidos: $('#apellidos').val(), correo: $('#correo').val(),
+                carrera: $('#carrera option:selected').text(), curso: $('#curso').val(), cantidad: $('#cantidad').val(), sala_id: $('#sala').val(),
+                periodo_inicio: $('#desde_value').html(), periodo_fin: $('#hasta_value').html(), dias: dias, programa: $('#programa').val()
             },
             type: "POST",
             success: function (response) {
-                if (response["success"] == true) {
-                    alert('valida');
+                if (response['success'] == true) {
+                    ActualizarSemana();
+                    alert(response['total'] + ' reservaciones se han creado con éxito');
+                    $('#ModalReservacion').modal('hide');
                 }
                 else {
                     alert(response['responseText']);
                 }
+            }
+        });
+    }
+}
+
+function CancelarEvento() {
+    if (confirm('¿Está seguro de que desea cancelar este evento? (no podrá ser re-activado en el futuro, tendría que volver a crearse)')) {
+        $.ajax({
+            url: '/_FormReservacion/CancelarEvento',
+            data: { id: $('#rsv_id').html() },
+            type: "DELETE",
+            success: function (response) {
+                ActualizarSemana();
+                alert('El evento ha sido cancelado con éxito');
+                $('#ModalReservacion').modal('hide');
+            }
+        });
+    }
+}
+
+function CancelarFrecuencia() {
+    var desde = $('#titulo').html().indexOf(',') + 2;
+    var cantidad = $('#titulo').html().indexOf('futuras)') - 1;
+    var restantes = $('#titulo').html().substring(desde, cantidad);
+
+    if (confirm(`¿Está seguro de que desea cancelar las ${restantes} reservaciones restantes de la frecuencia? (no podrán re-activarse en el futuro, tendrían que volver a ser creados)`)) {
+        $.ajax({
+            url: '/_FormReservacion/CancelarFrecuencia',
+            data: { id: $('#rsv_id').html() },
+            type: "DELETE",
+            success: function (response) {
+                ActualizarSemana();
+                alert('El evento ha sido cancelado con éxito');
+                $('#ModalReservacion').modal('hide');
             }
         });
     }
@@ -173,7 +211,7 @@ function _FormReservacion_CargarDatos(response) {
     _FormUsuario_BuscarUsuario(response['matricula']);
 
     $('#btn_evento').show();
-    $('#btn_frecuenia').show();
+    $('#btn_frecuencia').show();
 
     $('#matricula').val(response['matricula']);
     $('#curso').val(response['curso']);
@@ -226,7 +264,12 @@ function _FormReservacion_CargarDatos(response) {
         $('#hasta_value').html(response['periodo_fin']);
 
         if (parseInt(response['restantes']) == 0)
-            $('#btn_frecuenia').hide();
+            $('#btn_frecuencia').hide();
+
+        if (response['estado'] == 'Cancelada') {
+            $('#btn_frecuencia').hide();
+            $('#btn_evento').hide();
+        }
 
         for (var dia of response["dias"]) {
             $(`#cb_${dia['id']}`).prop('checked', true);

@@ -14,9 +14,7 @@ namespace ComputacionFCQ_MVC.Controllers.PV_Controllers
         [HttpGet]
         public IActionResult GetReservaciones(int sala, string dt)
         {
-            var str = Reservacion.GetReservacionesSemana(sala, Convert.ToDateTime(dt));
-            Console.WriteLine(str);
-            var jObject = JArray.Parse(str);
+            var jObject = JArray.Parse(Reservacion.GetReservacionesSemana(sala, Convert.ToDateTime(dt)));
             return Content(jObject.ToString(), "application/json");
         }
     }

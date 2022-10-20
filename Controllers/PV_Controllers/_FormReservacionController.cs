@@ -18,24 +18,24 @@ namespace ComputacionFCQ_MVC.Controllers.PV_Controllers
 
         [HttpPost]
         public IActionResult AgregarReservacionUnica(string matricula, string nombre, string apellidos, string correo, string carrera,
-            string curso, string cantidad, int sala_id, string fecha, int hi, int hf)
+            string curso, string programa, string cantidad, int sala_id, string fecha, int hi, int hf)
         {
             string? result = Usuario.ValidarDatos(matricula, nombre, apellidos, correo);
             if (result != null)
                 return Json(new { success = false, responseText = result });
 
             result = Reservacion.ValidarReservacion(curso, cantidad, sala_id, fecha, hi, hf);
-            if (result == null)
-                return Json(new { success = true });
+            if (result != null)
+                return Json(new { success = false, responseText = result});
 
             Usuario.GuardarCambios(matricula, nombre, apellidos, correo, carrera, false);
-            //Llamada a agregar reservacion
+            Reservacion.AgregarReservacion(matricula, curso, cantidad, sala_id, programa, fecha, hi, hf);
             return Json(new { success = true });
         }
 
         [HttpPost]
         public IActionResult AgregarReservacionFrecuencial(string matricula, string nombre, string apellidos, string correo, string carrera,
-            string curso, string cantidad, int sala_id, string periodo_inicio, string periodo_fin, string[] dias)
+            string curso, string programa, string cantidad, int sala_id, string periodo_inicio, string periodo_fin, string[] dias)
         {
             string? result = Usuario.ValidarDatos(matricula, nombre, apellidos, correo);
             if (result != null)
@@ -45,7 +45,23 @@ namespace ComputacionFCQ_MVC.Controllers.PV_Controllers
             if (result != null)
                 return Json(new { success = false, responseText = result });
 
+            int total = Reservacion.AgregarReservacion(matricula, curso, cantidad, sala_id, programa, periodo_inicio, periodo_fin, dias);
+            return Json(new { success = true , total = total });
+        }
+
+        [HttpDelete]
+        public IActionResult CancelarEvento(string id)
+        {
+            Reservacion.CancelarEvento(id);
+            return Json(new {success = true });
+        }
+
+        [HttpDelete]
+        public IActionResult CancelarFrecuencia(int id)
+        {
+            Reservacion.CancelarFrecuencia(id);
             return Json(new { success = true });
         }
+
     }
 }

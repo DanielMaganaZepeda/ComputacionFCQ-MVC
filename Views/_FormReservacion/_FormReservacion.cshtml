@@ -1,4 +1,5 @@
 ﻿<div class="modal-header">
+    <div id="rsv_id" hidden></div>
     <h1 id="titulo" class="modal-title fs-5">Hacer una reservacion</h1>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
@@ -124,12 +125,12 @@
 </div>
 
 <div class="modal-footer">
-    <button id="btn_evento" class="btn btn-danger flex" style="margin-left: auto; height:30px;" onclick="">
+    <button id="btn_evento" class="btn btn-danger flex" style="margin-left: auto; height:30px;" onclick="CancelarEvento()">
         <i class="bi bi-x-circle" style="margin-right: 10px; font-size: 14px; transform: rotate(90deg);"></i>
         Cancelar este evento
     </button>
 
-    <button id="btn_frecuencia" class="btn btn-danger flex" style="margin-left: auto; height:30px; margin-left:15px;" onclick="">
+    <button id="btn_frecuencia" class="btn btn-danger flex" style="margin-left: auto; height:30px; margin-left:15px;" onclick="CancelarFrecuencia()">
         <i class="bi bi-x-octagon" style="margin-right: 10px; font-size: 14px; transform: rotate(90deg);"></i>
         Cancelar esta frecuencia
     </button>

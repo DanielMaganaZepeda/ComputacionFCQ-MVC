@@ -3,13 +3,140 @@
     </div>
 </card>
 
-<button onclick="AbrirModal()">Abrir modal</button>
+<card class="card cards">
+    <div class="card-body">
+        <div class="header">Listado de reservaciones</div>
+        <table style="width:100%; table-layout:fixed; margin-bottom:15px;">
+            <tr style="vertical-align: top; ">
+                <td style="color: gray; border-right: 1px solid lightgray; padding-right:10px;">
+                    Desde
+                    <div id="table_desde" style="width: 85%"></div>
+                </td>
+                <td style="color: gray; border-right: 1px solid lightgray; padding-left: 10px; padding-right:10px;">
+                    Hasta
+                    <div id="table_hasta" style="width: 85%;"></div>
+                </td>
+                <td style="border-right: 1px solid lightgray; padding-left: 10px;">
+                    <div style="color:gray">Salas</div>
+                    <div>
+                        <input id="cb_1" type="checkbox" checked style="margin-right: 5px;"/>
+                        Sala 1
+                    </div>
+                    <div>
+                        <input id="cb_2" type="checkbox" checked style="margin-right: 5px;"/>
+                        Sala 2
+                    </div>
+                    <div>
+                        <input id="cb_3" type="checkbox" checked style="margin-right: 5px;"/>
+                        Sala 3
+                    </div>
+                    <div>
+                        <input id="cb_4" type="checkbox" checked style="margin-right: 5px;"/>
+                        Sala 4
+                    </div>
+                    <div>
+                        <input id="cb_5" type="checkbox" checked style="margin-right: 5px;"/>
+                        Sala 5
+                    </div>
+                </td>
+                <td style="border-right: 1px solid lightgray; padding-left: 10px;">
+                    <div style="color: gray">Tipo</div>
+                    <div>
+                        <input id="cb_Unicas" type="checkbox" checked style="margin-right: 5px;"/>
+                        Unicas
+                    </div>
+                    <div>
+                        <input id="cb_Frecuencias" type="checkbox" checked style="margin-right: 5px;"/>
+                        Frecuencias
+                    </div>
+                </td>
+                <td style="padding-left: 10px;">
+                    <div style="color: gray">Estado</div>
+                    <div>
+                        <input id="cb_Activas" type="checkbox" checked style="margin-right: 5px;"/>
+                        Activas
+                    </div>
+                    <div>
+                        <input id="cb_Canceladas" type="checkbox" checked style="margin-right: 5px;"/>
+                        Canceladas
+                    </div>
+                </td>
+            </tr>
+        </table>
+        
+        <div style="display:flex;">
+            <button class="btn btn-primary flex" style="margin-left: auto; height: 35px;" onclick="AplicarFiltros()">
+                <i class="bi bi-filter" style="font-size: 14px; margin-right: 7px;"></i>
+                Aplicar filtros
+            </button>
+
+            <button class="btn btn-secondary flex" style="margin-left: 15px; height: 35px;" onclick="AdministrarFechas();">
+                <i class="bi bi-calendar" style="font-size: 14px; margin-right: 7px;"></i>
+                Administrar fechas
+            </button>
+
+            <button class="btn btn-success flex" style="margin-left: 15px; height: 35px;" onclick="AbrirModal()">
+                <i class="bi bi-plus-lg" style="font-size: 14px; margin-right: 7px;"></i>
+                Agregar reservacion
+            </button>
+        </div>
+
+        <hr style="margin-bottom: 5px;"/>
+
+        <div class="table-responsive">
+            <table class="table table-hover" style="width:100%;">
+                <thead>
+                    <tr>
+                        <td>Sala</td>
+                        <td>Curso</td>
+                        <td>Docente</td>
+                        <td>Tipo</td>
+                        <td>Fecha / Periodo</td>
+                        <td>Estado</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody id="body"></tbody>
+            </table>
+        </div>
+
+    </div>
+</card>
 
 <!--Modal Iniciar Sesion-->
 <div class="modal fade" id="ModalReservacion">
     <div class="modal-dialog">
         <div class="modal-content" style="width: 900px; left: calc((100% - 900px) / 2);">
             <div id="FormReservacion"></div>
+        </div>
+    </div>
+</div>
+
+<!--Modal administrar fechas-->
+<div class="modal fade" id="ModalFechas">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title fs-5">Administrar fechas del semestre</div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="display:flex;">
+                <div style="width:50%; padding-right:15px;">
+                    Inicio del semestre
+                    <div id="semestre_desde"></div>
+                </div>
+                <div style="width:50%; padding-left:15px;">
+                    Final del semestre
+                    <div id="semestre_hasta"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary flex" onclick="AplicarCambiosFechas()">
+                    <i class="bi bi-check-lg" style="margin-right: 5px"></i>
+                    Aplicar cambios
+                </button>
+            </div>
+
         </div>
     </div>
 </div>
@@ -25,6 +152,12 @@
 <script>
 $('#calendario').load('/_Calendario/_CalendarioPartial');
 $('#FormReservacion').load('/_FormReservacion/_FormReservacionPartial');
+
+$('#table_desde').load('/_DatePicker/_DatePickerPartial?id=table_desde&tipo=desde');
+$('#table_hasta').load('/_DatePicker/_DatePickerPartial?id=table_hasta&tipo=hasta');
+
+$('#semestre_desde').load('/_DatePicker/_DatePickerPartial?id=semestre_desde&tipo=desde');
+$('#semestre_hasta').load('/_DatePicker/_DatePickerPartial?id=semestre_hasta&tipo=hasta');
 
 </script>
 }

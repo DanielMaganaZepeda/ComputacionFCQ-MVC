@@ -51,12 +51,12 @@ function ActualizarSemana() {
         data: { sala: sala_id, dt: dt.toDateString() },
         type: "GET",
         success: function (response) {
-            console.log(response);
             $('button.' + 'reserv').remove();
             for (reservacion of response) {
                 for (id of reservacion["targetIds"]) {
 
-                    var template = `<button class="reserv" id="${reservacion["id"]}" onclick="ReservacionDetalle(this.id);" style="background-color:${reservacion["backgroundColor"]};">
+                    var template = `<button class="reserv" id="${reservacion["id"]}" onclick="$('#rsv_id').html('${reservacion['id']}'); ReservacionDetalle(this.id);"
+                                style="background-color:${reservacion["backgroundColor"]};">
                                 <div style="margin-bottom:10px;">${reservacion["nombre"]}</div>
                                 <div style="font-weight: 500;">${reservacion["curso"]}</div>
                                 </button>`
