@@ -1,0 +1,109 @@
+﻿@model List<ComputacionFCQ_MVC.Models.Programa>
+
+<div class="card cards">
+    <div class="card-body">
+        <div class="header" style="display:flex; align-items:center;">
+            Listado de programas
+
+            <div id="div_editando" style="display:flex; margin-left:auto;">
+                <button id="btn_cancelar" class="btn btn-danger flex" style="margin-right:15px;" onclick="Cancelar()">
+                    <i class="bi bi-x-lg" style="font-size:14px; margin-right:5px;"></i>
+                    Cancelar
+                </button>
+        
+                <button id="btn_aplicar" class="btn btn-success flex" onclick="AplicarCambios()">
+                    <i class="bi bi-check-lg" style="font-size:14px; margin-right:5px;"></i>
+                    Aplicar cambios
+                </button>
+            </div>
+
+            <div id="div_default" style="display:flex; margin-left:auto;">
+                <button id="btn_editar" class="btn btn-primary flex" style="margin-right:15px;" onclick="Editar()">
+                    <i class="bi bi-pencil-square" style="font-size:14px; margin-right:5px;"></i>
+                    Editar
+                </button>
+        
+                <button id="btn_agregar" class="btn btn-success flex" onclick="Programa_AbrirModal()">
+                    <i class="bi bi-plus-lg" style="font-size:14px; margin-right:5px;"></i>
+                    Agregar un programa
+                </button>
+            </div>
+        </div>
+        <hr style="margin-bottom:5px;"/>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr style="vertical-align:middle;">
+                        <td>Nombre</td>
+                        <td style="text-align:center;">Sala 1</td>
+                        <td style="text-align:center;">Sala 2</td>
+                        <td style="text-align:center;">Sala 3</td>
+                        <td style="text-align:center;">Sala 4</td>
+                        <td style="text-align:center;">Sala 5</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var programa in Model)
+                    {
+                        <tr style="vertical-align:middle;">
+                            <td>@programa.Nombre</td>
+                            @for(int i=1; i<=5; i++)
+                            {
+                                <td style="text-align:center;">
+                                    @if (programa.Salas.Where(x=> x.Id==i).Count()>0)
+                                    {
+                                        <input id="@(programa.Id)_@i" type="checkbox" checked class="no-disponible" onclick="cb_Click(this.id)"/>
+                                    }
+                                    else
+                                    {
+                                        <input id="@(programa.Id)_@i" type="checkbox" class="no-disponible" onclick="cb_Click(this.id)"/>
+                                    }
+                                </td>
+                            }
+                            <td>
+                                <button class="btn btn-outline-danger flex" style="margin-left:auto;" onclick="EliminarPrograma(@programa.Id)">
+                                    <i class="bi bi-x-lg" style="font-size:14px; margin-right:5px;"></i>
+                                    Eliminar programa
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalPrograma">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar un programa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="color:gray">
+                <a>Nombre del programa:</a>
+
+                <input type="text" id="tx_nombre" class="form-control" style="width:100%"/>
+             </div>
+             
+             <div class="modal-footer">
+                 <button id="btn_agregar" class="btn btn-success flex" style="margin-left:auto;" onclick="AgregarPrograma()">
+                     <i class="bi bi-plus-lg" style="font-size:14px; margin-right:5px;"></i>
+                     Agregar programa
+                 </button>
+             </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .no-disponible{
+        cursor: not-allowed;
+    }
+</style>
+
+@section Scripts{
+    <script src="~/js/Programas.js"></script>
+}

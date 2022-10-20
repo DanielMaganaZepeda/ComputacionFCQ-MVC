@@ -66,7 +66,7 @@ function ActualizarTablaReservaciones(response) {
     //Se vacian los elementos que haya en la tabla
     $('#body').html('');
     var template;
-    var button = `class="btn btn-outline-primary flex" style="height: 35px;" onclick="ReservacionDetalle(this.id)">
+    var button = `class="btn btn-outline-primary flex" style="height: 35px; margin-left:auto;" onclick="ReservacionDetalle(this.id)">
                   <i class="bi bi-gear-wide-connected" style="margin-right:10px; font-size:14px;"></i>Ver detalles</button>`;
 
     for (reservacion of response) {
