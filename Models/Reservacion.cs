@@ -42,21 +42,16 @@ namespace ComputacionFCQ_MVC.Models
                 salas.Contains(x.SalaId) && x.FrecuenciaId==null).ToList();
 
                 //Obtenemos las frecuencias dentro del rango de fechas
-                List<Frecuencium?> frecuencias = db.Reservacions.Where(x => x.FechaInicio >= inicio && x.FechaFin <= fin && 
-                salas.Contains(x.SalaId) && x.FrecuenciaId!=null).Select(x=> x.Frecuencia).Distinct().ToList();
+                List<int?> frecuencias_ids = db.Reservacions.Where(x => x.FechaInicio >= inicio && x.FechaFin <= fin && 
+                salas.Contains(x.SalaId) && x.FrecuenciaId!=null).Select(x=> x.FrecuenciaId).Distinct().ToList();
 
                 //Le agregamos a la lista de unicas la primera reservacion frecuencial de cada frecuencia 
-                foreach (var frecuencia in frecuencias)
-                    reservaciones.Add(db.Reservacions.Where(x => x.FrecuenciaId == frecuencia.Id).First());
+                foreach (var frecuencia_id in frecuencias_ids)
+                    reservaciones.Add(db.Reservacions.Where(x => x.FrecuenciaId == frecuencia_id).First());
 
                 //Aplicamos el filtro de Tipo
                 if (tipos.Length == 1 && tipos[0] == "Unicas")
-                {
                     reservaciones.RemoveAll(x => x.FrecuenciaId != null);
-
-                    //Quitamos todas las frecuencias para omitir la busqueda mas abajo
-                    frecuencias = new List<Frecuencium?>();
-                }
                 if (tipos.Length == 1 && tipos[0] == "Frecuencias")
                     reservaciones.RemoveAll(x => x.FrecuenciaId == null);
 
@@ -65,37 +60,31 @@ namespace ComputacionFCQ_MVC.Models
                 if (estados.Length == 1 && estados[0] == "Activas")
                 {
                     reservaciones.RemoveAll(x => x.Activa == false && x.FrecuenciaId != null);
-                    foreach (var frecuencia in frecuencias)
+                    foreach (var frecuencia_id in frecuencias_ids)
                     {
-                        if (db.Reservacions.Where(x => x.FrecuenciaId == frecuencia.Id && x.Activa == true).Count()==0)
-                            reservaciones.RemoveAll(x => x.FrecuenciaId == frecuencia.Id);
+                        if (db.Reservacions.Where(x => x.FrecuenciaId == frecuencia_id && x.Activa == true).Count()==0)
+                            reservaciones.RemoveAll(x => x.FrecuenciaId == frecuencia_id);
                     }
                 }
                 if (estados.Length == 1 && estados[0] == "Canceladas")
                 {
                     reservaciones.RemoveAll(x => x.FrecuenciaId == null && x.Activa == true);
-                    foreach(var frecuencia in frecuencias)
+                    foreach(var frecuencia_id in frecuencias_ids)
                     {
-                        if (db.Reservacions.Where(x => x.FrecuenciaId == frecuencia.Id && x.Activa == true).Count() > 0)
-                            reservaciones.RemoveAll(x => x.FrecuenciaId == frecuencia.Id);
+                        if (db.Reservacions.Where(x => x.FrecuenciaId == frecuencia_id && x.Activa == true).Count() > 0)
+                            reservaciones.RemoveAll(x => x.FrecuenciaId == frecuencia_id);
                     }
                 }
 
                 //Finalmente en la lista quedan las reservaciones unicas y frecuenciales ordenadas
                 reservaciones = reservaciones.OrderBy(x => x.FechaInicio).ToList();
 
-                //Guardamos los usuarios que ocuparemos
-                List <Usuario> usuarios = new List<Usuario>();
-                foreach (var rsv in reservaciones)
-                    usuarios.Add(db.Usuarios.Find(rsv.UsuarioId));
-                usuarios = usuarios.Distinct().ToList();
-
                 foreach(Reservacion rsv in reservaciones)
                 {
                     json += "{";
                     json += $"id: {rsv.Id},";
                     json += $"sala_id: {rsv.SalaId},";
-                    json += $"nombre: '{usuarios.Where(x=> x.Id==rsv.UsuarioId).First().Nombre} {usuarios.Where(x => x.Id == rsv.UsuarioId).First().Apellidos}',";
+                    json += $"nombre: '{rsv.Usuario.Nombre} {rsv.Usuario.Apellidos}',";
 
                     if (rsv.FrecuenciaId == null)
                     {
@@ -114,7 +103,7 @@ namespace ComputacionFCQ_MVC.Models
                     else
                     {
                         json += "tipo: 'Frecuencia',";
-                        json += $"curso: '{frecuencias.Where(x=> x.Id==rsv.FrecuenciaId).First().Curso}',";
+                        json += $"curso: '{rsv.Frecuencia.Curso}',";
 
                         if (db.Reservacions.Where(x => x.FrecuenciaId == rsv.FrecuenciaId && x.Activa == true).Count() == 0)
                             json += "estado: 'Cancelada',";
@@ -126,8 +115,8 @@ namespace ComputacionFCQ_MVC.Models
                                 json += "estado: 'Activa',";
                         }
 
-                        json += $"periodo_inicio: '{Fecha.ParseFecha(frecuencias.Where(x=>x.Id==rsv.FrecuenciaId).First().PeriodoInicio.Value)}',";
-                        json += $"periodo_fin: '{Fecha.ParseFecha(frecuencias.Where(x=>x.Id==rsv.FrecuenciaId).First().PeriodoFin.Value)}'";
+                        json += $"periodo_inicio: '{Fecha.ParseFecha(rsv.Frecuencia.PeriodoInicio.Value)}',";
+                        json += $"periodo_fin: '{Fecha.ParseFecha(rsv.Frecuencia.PeriodoFin.Value)}'";
                     }
 
                     json += "},";
@@ -255,7 +244,7 @@ namespace ComputacionFCQ_MVC.Models
                     if(reservacion.FrecuenciaId == null)
                         return $"La reservación se empalma con la reservación \"{reservacion.Curso}\" con fecha {reservacion.FechaInicio.Value.ToString("dd/MM/yyyy")}";
                     else
-                        return $"La reservación se empalma con la reservación \"{db.Frecuencia.Find(reservacion.FrecuenciaId).Curso}\" " +
+                        return $"La reservación se empalma con la reservación \"{reservacion.Frecuencia.Curso}\" " +
                             $"con fecha {reservacion.FechaInicio.Value.ToString("dd/MM/yyyy")}";
                 }
 
@@ -322,7 +311,7 @@ namespace ComputacionFCQ_MVC.Models
                             if (reservacion.FrecuenciaId == null)
                                 return $"La reservación se empalma con la reservación \"{reservacion.Curso}\" con fecha {reservacion.FechaInicio.Value.ToString("dd/MM/yyyy")}";
                             else
-                                return $"La reservación se empalma con la reservación \"{db.Frecuencia.Find(reservacion.FrecuenciaId).Curso}\" " +
+                                return $"La reservación se empalma con la reservación \"{reservacion.Frecuencia.Curso}\" " +
                                     $"con fecha {reservacion.FechaInicio.Value.ToString("dd/MM/yyyy")}";
                         }
                     }
@@ -340,10 +329,10 @@ namespace ComputacionFCQ_MVC.Models
             {
                 var reservacion = db.Reservacions.Find(id);
 
-                json += $"matricula: {db.Usuarios.Find(reservacion.UsuarioId).Matricula}, ";
+                json += $"matricula: {reservacion.Usuario.Matricula}, ";
                 json += $"cantidad_alumnos: {reservacion.CantidadAlumnos}, ";
                 json += $"sala_id: {reservacion.SalaId}, ";
-                json += $"programa: '{db.Programas.Find(reservacion.ProgramaId).Nombre}', ";
+                json += $"programa: '{reservacion.Programa.Nombre}', ";
                 json += reservacion.Activa == true ? "activa: true, ": "activa: false, ";
 
                 DateTime dt = reservacion.FechaInicio.Value;
@@ -360,21 +349,19 @@ namespace ComputacionFCQ_MVC.Models
                 //Si es frecuencial
                 else
                 {
-                    Frecuencium frecuencia = db.Frecuencia.Find(reservacion.FrecuenciaId);
-
                     if (db.Reservacions.Where(x => x.FrecuenciaId == reservacion.FrecuenciaId && x.Activa == true).Count() == 0)
                         json += "estado: 'Cancelada',";
 
-                    json += $"totales: {db.Reservacions.Where(x=>x.FrecuenciaId==frecuencia.Id).Count()},";
-                    json += $"restantes: {db.Reservacions.Where(x=>x.FrecuenciaId==frecuencia.Id && x.FechaInicio.Value > DateTime.Now).Count()},";
+                    json += $"totales: {db.Reservacions.Where(x=>x.FrecuenciaId==reservacion.FrecuenciaId).Count()},";
+                    json += $"restantes: {db.Reservacions.Where(x=>x.FrecuenciaId==reservacion.FrecuenciaId && x.FechaInicio.Value > DateTime.Now).Count()},";
 
                     json += "es_unica: false, ";
-                    json += $"curso: '{frecuencia.Curso}', ";
+                    json += $"curso: '{reservacion.Frecuencia.Curso}', ";
 
-                    dt = frecuencia.PeriodoFin.Value;
+                    dt = reservacion.Frecuencia.PeriodoFin.Value;
                     json += $"periodo_fin: '{dt.Day}/{Fecha.GetMes(dt.Month)}/{dt.Year}', ";
 
-                    dt = frecuencia.PeriodoInicio.Value;
+                    dt = reservacion.Frecuencia.PeriodoInicio.Value;
                     json += $"periodo_inicio: '{dt.Day}/{Fecha.GetMes(dt.Month)}/{dt.Year}', ";
 
                     //Se envia arreglo de los dias que se presentan
@@ -383,7 +370,7 @@ namespace ComputacionFCQ_MVC.Models
                     while(dt.Date < dt_lim.Date)
                     {
                         //Se busca una reservacion de la misma frecuencia en el dia seleccionado
-                        var aux = db.Reservacions.Where(x => x.FrecuenciaId == frecuencia.Id && x.FechaInicio.Value.Date == dt.Date).FirstOrDefault();
+                        var aux = db.Reservacions.Where(x => x.FrecuenciaId == reservacion.FrecuenciaId && x.FechaInicio.Value.Date == dt.Date).FirstOrDefault();
                         if (aux != null)
                         {
                             json += "{";
@@ -420,7 +407,7 @@ namespace ComputacionFCQ_MVC.Models
                     if (rsv.FrecuenciaId == null)
                         json += $"curso: '{rsv.Curso}', backgroundColor: 'bisque',";
                     else
-                        json += $"curso: '{db.Frecuencia.Find(rsv.FrecuenciaId).Curso}', backgroundColor: 'lavender',";
+                        json += $"curso: '{rsv.Frecuencia.Curso}', backgroundColor: 'lavender',";
 
                     json += "targetIds: [";
                     for (int hora = rsv.FechaInicio.Value.Hour; hora < rsv.FechaFin.Value.Hour; hora++)

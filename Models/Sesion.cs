@@ -24,17 +24,16 @@ namespace ComputacionFCQ_MVC.Models
             using (var db = new ComputacionFCQContext())
             {
                 //Se busca que haya una sesion activa con esta matricula
-                if (db.Sesions.Where(x => x.FechaFin.Value == null && x.UsuarioId == db.Usuarios.Where(y => y.Matricula == matricula).First().Id).FirstOrDefault() != null)
+                Sesion sesion = db.Sesions.Where(x => x.FechaFin.Value == null && x.UsuarioId == db.Usuarios.Where(y => y.Matricula == matricula).First().Id).FirstOrDefault();
+                if (sesion != null)
                 {
-                    db.Sesions.Where(x => x.FechaFin.Value == null && x.UsuarioId == db.Usuarios.Where(y => y.Matricula == matricula).First().Id).First().FechaFin = DateTime.Now;
+                    sesion.FechaFin = DateTime.Now;
                     db.SaveChanges();
                     return null;
                 }
                 //Si no tiene una sesion activa
                 else
-                {
                     return "El usuario no se encuentra en una sesion activa";
-                }
             }
         }
 
