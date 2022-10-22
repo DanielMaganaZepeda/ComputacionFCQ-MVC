@@ -9,6 +9,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ComputacionFCQContext>
     (options => options.UseSqlServer(builder.Configuration.GetConnectionString("dbconn")));
 
+//Permite que se almacene en memoria
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,11 +27,11 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Sesiones}/{action=Sesiones}/{id?}");
 
 app.Run();

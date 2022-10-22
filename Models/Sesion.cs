@@ -18,55 +18,67 @@ namespace ComputacionFCQ_MVC.Models
         //Retorna null si se cierra la sesion, retorna mensaje si el usuario no cuenta con una sesion activa
         public static string? FinalizarSesion(string matricula)
         {
-            //Se valida la matricula
-            if (!Validaciones.Entero(matricula)) return "Debe introducir una matricula válida";
-
-            using (var db = new ComputacionFCQContext())
+            try
             {
-                //Se busca que haya una sesion activa con esta matricula
-                Sesion sesion = db.Sesions.Where(x => x.FechaFin.Value == null && x.UsuarioId == db.Usuarios.Where(y => y.Matricula == matricula).First().Id).FirstOrDefault();
-                if (sesion != null)
+                //Se valida la matricula
+                if (!Validaciones.Entero(matricula)) return "Debe introducir una matricula válida";
+
+                using (var db = new ComputacionFCQContext())
                 {
-                    sesion.FechaFin = DateTime.Now;
-                    db.SaveChanges();
-                    return null;
+                    //Se busca que haya una sesion activa con esta matricula
+                    Sesion sesion = db.Sesions.Where(x => x.FechaFin.Value == null && x.UsuarioId == db.Usuarios.Where(y => y.Matricula == matricula).First().Id).FirstOrDefault();
+                    if (sesion != null)
+                    {
+                        sesion.FechaFin = DateTime.Now;
+                        db.SaveChanges();
+                        return null;
+                    }
+                    //Si no tiene una sesion activa
+                    else
+                        return "El usuario no se encuentra en una sesion activa";
                 }
-                //Si no tiene una sesion activa
-                else
-                    return "El usuario no se encuentra en una sesion activa";
             }
+            catch { return "Error desconocido en Models.Sesion.FinalizarSesion, actualice la pagina y vuelva a intentarlo"; }
         }
 
         public static void IniciarSesion(string matricula, int sala, int computadora, string programa)
         {
-            using (var db = new ComputacionFCQContext())
+            try
             {
-                int usuario_id = db.Usuarios.Where(x => x.Matricula == matricula).First().Id;
-                int computadora_id = db.Computadoras.Where(x => x.SalaId == sala && x.Numero == computadora).First().Id;
-                int programa_id = db.Programas.Where(x => x.Nombre == programa).First().Id;
+                using (var db = new ComputacionFCQContext())
+                {
+                    int usuario_id = db.Usuarios.Where(x => x.Matricula == matricula).First().Id;
+                    int computadora_id = db.Computadoras.Where(x => x.SalaId == sala && x.Numero == computadora).First().Id;
+                    int programa_id = db.Programas.Where(x => x.Nombre == programa).First().Id;
 
-                db.Database.ExecuteSqlRaw("exec SP_IniciarSesion @p0, @p1, @p2", 
-                    parameters: new[] { usuario_id.ToString(), computadora_id.ToString(), programa_id.ToString() });
+                    db.Database.ExecuteSqlRaw("exec SP_IniciarSesion @p0, @p1, @p2",
+                        parameters: new[] { usuario_id.ToString(), computadora_id.ToString(), programa_id.ToString() });
+                }
             }
+            catch { }
         }
 
         public static List<DatosSesion> GetSesiones()
         {
-            List<DatosSesion> lista = new List<DatosSesion>();
-            using (var db = new ComputacionFCQContext())
+            try
             {
-                List<Sesion> sesiones = db.Sesions.Where(x => x.FechaFin.Value == null).ToList();
-
-                foreach (Sesion sesion in sesiones)
+                List<DatosSesion> lista = new List<DatosSesion>();
+                using (var db = new ComputacionFCQContext())
                 {
-                    lista.Add(new DatosSesion
-                        (db.Usuarios.Find(sesion.UsuarioId).Matricula,
-                        db.Computadoras.Find(sesion.ComputadoraId).SalaId,
-                        db.Computadoras.Find(sesion.ComputadoraId).Numero,
-                        sesion.FechaInicio.Value));
+                    List<Sesion> sesiones = db.Sesions.Where(x => x.FechaFin.Value == null).ToList();
+
+                    foreach (Sesion sesion in sesiones)
+                    {
+                        lista.Add(new DatosSesion
+                            (db.Usuarios.Find(sesion.UsuarioId).Matricula,
+                            db.Computadoras.Find(sesion.ComputadoraId).SalaId,
+                            db.Computadoras.Find(sesion.ComputadoraId).Numero,
+                            sesion.FechaInicio.Value));
+                    }
                 }
+                return lista;
             }
-            return lista;
+            catch { return new List<DatosSesion>();}
         }
     }
 

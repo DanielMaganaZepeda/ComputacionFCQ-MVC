@@ -1,4 +1,7 @@
-﻿var cambios = [];
+﻿$('#nav-page').html('Programas')
+$('#nav-icon').addClass('bi-grid-3x3-gap-fill')
+
+var cambios = [];
 var editable = false;
 
 $('#div_editando').hide();

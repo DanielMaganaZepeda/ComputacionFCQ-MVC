@@ -1,0 +1,187 @@
+﻿<card class="card cards" style="padding-bottom:0px;">
+    <div class="card-body" style="margin-bottom:0px;">
+        <div style="display:flex; align-items:center;">
+            <div class="header">Listado de computadoras</div>
+            <select id="sala" class="input" style="margin-left:15px; height:30px;" onchange="ActualizarComputadoras()">
+                <option selected value="1">Sala 1</option>
+                <option value="2">Sala 2</option>
+                <option value="3">Sala 3</option>
+                <option value="4">Sala 4</option>
+                <option value="5">Sala 5</option>
+            </select>
+        </div>
+        <hr />
+        <div class="table table-responsive" style="margin-bottom:0px;">
+            <table class="table" style="width:100%; table-layout:fixed; margin-bottom:0px;">
+                <tr style="border: white">
+                    @for(int i = 1; i<40; i=i+10)
+                    {
+                        <td>
+                            <table class="table table-hover table-bordered" style="margin-bottom:0px;">
+                                @for(int j = i; j<i+10; j++)
+                                {
+                                    <tr>
+                                        <td style="display:flex; align-items:center;">
+                                            @j
+                                            <div id="@j"></div>
+                                            <div id="div_@j" class="div">
+                                            </div>
+                                            <button id="@j" class="btn btn-outline-primary flex" style="margin-left:auto; height:30px;" onclick="ComputadoraDetalle(this.id)">
+                                                <i name="information-circle-outline" class="bi bi-gear-wide-connected align-middle" style="font-size: 16px;"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+                    }
+                </tr>
+            </table>
+        </div>
+    </div>
+</card>
+
+<card class="card cards">
+    <div class="card-body">
+        <div class="header">
+            Listado de reportes pendientes
+        </div>
+
+        <hr style="margin-bottom:5px; margin-top:5px;"/>
+
+        <div class="table-responsive">
+            <div id="table_sin_reportes" class="flex" style="margin-top: 10px;">
+                No hay reportes pendientes por el momento
+            </div>
+            <table class="table table-hover" style="width:100%;" id="tabla_reportes">
+                <thead>
+                    <tr>
+                        <td>Sala</td>
+                        <td>Computadora</td>
+                        <td>Fecha de creación</td>
+                        <td>Detalle</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody id="table_body"></tbody>
+            </table>
+        </div>
+    </div>
+</card>
+
+<!--Modal Agregar Reporte-->
+<div class="modal fade" id="ModalReporte" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Levantar reporte</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="color:gray">
+                <div>Motivo del reporte</div>
+                <textarea id="detalle" type="text" class="form-control" maxlength="100"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger flex" style="margin-left: auto;" onclick="AgregarReporte()">
+                    <i class="bi bi-exclamation-triangle" style="margin-right: 10px; font-size: 14px;"></i>
+                    Levantar reporte
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal computadora detalle-->
+<div class="modal fade" id="ModalComputadora">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Información de la computadora</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <div style="display:flex;">
+                    <div style="display:block; width:215px;">
+                        Sala:
+                    </div>
+                    <div id="div_sala"></div>
+                </div>
+
+                <div style="display:flex;">
+                    <div style="display:block; width:215px;">
+                        Computadora:
+                    </div>
+                    <div id="div_numero"></div>
+                </div>
+
+                <div style="display:flex; align-items:center;">
+                    <div style="display:block; width:200px;">
+                        Estado de la computadora:
+                    </div>
+                    <div id="div" class="div no-disponible" style="width:max-content"></div>
+                </div>
+
+                <div style="margin-bottom:0px; margin-top:30px; color:gray; font-size:18px;">Historial de reportes</div>
+                <hr style="margin-top:0px; margin-bottom:0px;"/>
+
+                <div id="div_sin_reportes" class="flex" style="margin-top:15px">
+                    Esta computadora no cuenta con reportes registrados
+                </div>
+                
+                <table id="tabla" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td style="width:200px;">Fecha de creación</td>
+                            <td>Detalle del reporte</td>
+                            <td style="width:200px;">Estatus</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody id="body"></tbody>
+                    </table>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-danger flex" style="margin-left: auto;" onclick="LevantarReporte()">
+                    <i class="bi bi-exclamation-triangle" style="margin-right: 10px; font-size: 14px;"></i>
+                    Levantar reporte
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .div{
+        padding-left:15px;
+        padding-right:15px;
+        border-radius:5px;
+        margin-left:15px;
+        margin-right:15px;
+        height: 30px;
+        width:100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: lightgreen;
+        color: black;
+    }
+
+    .disponible{
+        background-color: lightgreen;
+    }
+
+    .no-disponible{
+        background-color: lightcoral;
+    }
+</style>
+
+@section Scripts{
+    <script src="~/js/Computadoras.js"></script>
+    <script>
+        
+    </script>
+}

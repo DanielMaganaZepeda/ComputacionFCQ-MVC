@@ -13,38 +13,57 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ComputacionFCQ_MVC</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Sesiones" asp-action="Sesiones">Sesiones</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Reservaciones" asp-action="Reservaciones">Reservaciones</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Programas" asp-action="Programas">Programas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Reportes" asp-action="Reportes">Reportes</a>
-                        </li>
-                    </ul>
-                </div>
+        <div style="display:flex; background-color:rgb(30, 30, 30); margin:0; width:100%; height:55px; align-items:center;">
+            <button class="flex" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"
+            style="border:none; background-color:transparent; color:white; margin:0px; height:55px; width:55px;">
+              <i class="bi bi-list" style="font-size:24px;"></i>
+            </button>
+
+            <div style="width:1px; height: 30px; background-color:gray; margin-right:15px;"></div>
+            
+            <div class="flex" style="color:lightgray; ">
+                <i id="nav-icon" class="bi" style="margin-right:10px; font-size:18px; color:var(--fcq)"></i>
+                <div id="nav-page" style="font-size: 16px;"></div>
             </div>
-        </nav>
+        </div>
     </header>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+      <div class="offcanvas-header flex">
+          <img src="https://seeklogo.com/images/F/facultad-de-ciencias-quimicas-logo-82ADF31672-seeklogo.com.png?v=637823546160000000" style="height:60px; margin-right:15px;"/>
+
+          <div style="font-family: Times New Roman;">
+              <div style="font-size: 24px;">DEPTO. INFORMÁTICA</div>
+              <div style="font-size: 16px;">Facultad de Ciencias Químicas</div>
+          </div>
+      </div>
+
+      <hr style="margin-top:0px; margin-bottom:0px;"/>
+
+      <div class="offcanvas-body" style="padding:0px;">
+
+          <button class="nav-btn" onclick="@("window.location.href='" + @Url.Action("Sesiones", "Sesiones") + "'");">
+              <i class="bi bi-house-fill nav-icon"></i>Sesiones
+          </button>
+
+          <button class="nav-btn" onclick="@("window.location.href='" + @Url.Action("Reservaciones", "Reservaciones") + "'");">
+              <i class="bi bi-calendar nav-icon"></i>Reservaciones
+          </button>
+
+          <button class="nav-btn" onclick="@("window.location.href='" + @Url.Action("Programas", "Programas") + "'");">
+              <i class="bi bi-grid-3x3-gap-fill nav-icon"></i>Programas
+          </button>
+
+          <button class="nav-btn" onclick="@("window.location.href='" + @Url.Action("Computadoras", "Computadoras") + "'");">
+              <i class="bi bi-pc-display nav-icon"></i>Computadoras
+          </button>
+
+          <button class="nav-btn" onclick="@("window.location.href='" + @Url.Action("Reportes", "Reportes") + "'");">
+              <i class="bi bi-download nav-icon"></i>Reportes
+          </button>
+
+      </div>
+    </div>
     
     <div style="width:100%">
         @RenderBody()

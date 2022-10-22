@@ -1,3 +1,7 @@
+:root {
+    --fcq: rgb(177,16,23);
+}
+
 html {
   font-size: 14px;
 }
@@ -7,6 +11,29 @@ html {
     font-size: 16px;
   }
 }
+
+.nav-icon {
+    margin-right: 15px;
+    font-size: 18px;
+    color: var(--fcq);
+}
+
+.nav-btn {
+    border: none;
+    padding:0;
+    padding-left:30px;
+    margin:0;
+    background-color: transparent;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    color:rgb(30,30,30);
+}
+
+    .nav-btn:hover {
+        background-color:lightgray;
+    }
 
 html {
   position: relative;

@@ -1,4 +1,7 @@
-﻿$('#FormReservacion').load('/_FormReservacion/_FormReservacionPartial');
+﻿$('#nav-page').html('Reservaciones')
+$('#nav-icon').addClass('bi-calendar')
+
+$('#FormReservacion').load('/_FormReservacion/_FormReservacionPartial');
 $(document).ready(function () { AplicarFiltros(); })
 
 function AbrirModal() {

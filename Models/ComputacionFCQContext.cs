@@ -27,7 +27,6 @@ namespace ComputacionFCQ_MVC.Models
         public virtual DbSet<Sala> Salas { get; set; } = null!;
         public virtual DbSet<Sesion> Sesions { get; set; } = null!;
         public virtual DbSet<Usuario> Usuarios { get; set; } = null!;
-        public virtual DbSet<VistaReservacione> VistaReservaciones { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -399,40 +398,6 @@ namespace ComputacionFCQ_MVC.Models
                     .HasForeignKey(d => d.CarreraId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Usuario__carrera__412EB0B6");
-            });
-
-            modelBuilder.Entity<VistaReservacione>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("VistaReservaciones");
-
-                entity.Property(e => e.CantidadAlumnos).HasColumnName("cantidad_alumnos");
-
-                entity.Property(e => e.Curso)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("curso");
-
-                entity.Property(e => e.FechaFin)
-                    .HasColumnType("datetime")
-                    .HasColumnName("fecha_fin");
-
-                entity.Property(e => e.FechaInicio)
-                    .HasColumnType("datetime")
-                    .HasColumnName("fecha_inicio");
-
-                entity.Property(e => e.FrecuenciaId).HasColumnName("frecuencia_id");
-
-                entity.Property(e => e.Id)
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("id");
-
-                entity.Property(e => e.ProgramaId).HasColumnName("programa_id");
-
-                entity.Property(e => e.SalaId).HasColumnName("sala_id");
-
-                entity.Property(e => e.UsuarioId).HasColumnName("usuario_id");
             });
 
             OnModelCreatingPartial(modelBuilder);

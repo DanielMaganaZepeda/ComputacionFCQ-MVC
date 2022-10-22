@@ -22,37 +22,49 @@ namespace ComputacionFCQ_MVC.Models
 
         public static List<int> GetSalasDisponibles()
         {
-            using (var db = new ComputacionFCQContext())
+            try
             {
-                return db.Salas.Where(x =>
-                    !(db.Reservacions.Where(y => y.FechaInicio.Value <= DateTime.Now && y.FechaFin.Value > DateTime.Now).Select(y => y.SalaId).Distinct().Contains(x.Id))
-                    ).Select(x=>x.Id).ToList();
+                using (var db = new ComputacionFCQContext())
+                {
+                    return db.Salas.Where(x =>
+                        !(db.Reservacions.Where(y => y.FechaInicio.Value <= DateTime.Now && y.FechaFin.Value > DateTime.Now).Select(y => y.SalaId).Distinct().Contains(x.Id))
+                        ).Select(x => x.Id).ToList();
+                }
             }
+            catch { return new List<int>(); }
         }
 
         public static List<int> GetComputadorasPorSala(int sala)
         {
-            using (var db = new ComputacionFCQContext())
+            try
             {
-                //Se encuentran las computadoras que esten en la sala y que no esten en una sesion activa
-                return db.Computadoras.Where(x => x.SalaId == sala &&
-                !(db.Sesions.Where(y => y.FechaFin.Value == null).Select(y => y.ComputadoraId).ToList().Contains(x.Id))).Select(x => x.Numero).ToList();
+                using (var db = new ComputacionFCQContext())
+                {
+                    //Se encuentran las computadoras que esten en la sala y que no esten en una sesion activa
+                    return db.Computadoras.Where(x => x.SalaId == sala && x.Funcional == true &&
+                    !(db.Sesions.Where(y => y.FechaFin.Value == null).Select(y => y.ComputadoraId).ToList().Contains(x.Id))).Select(x => x.Numero).ToList();
+                }
             }
+            catch { return new List<int>(); }
         }
 
         public static List<string> GetProgramasPorSala(int sala)
         {
-            if(sala!=0)
+            try
             {
-                using (var db = new ComputacionFCQContext())
+                if (sala != 0)
                 {
-                    return db.Salas.Find(sala).Programas.Select(x => x.Nombre).ToList();
+                    using (var db = new ComputacionFCQContext())
+                    {
+                        return db.Salas.Find(sala).Programas.Select(x => x.Nombre).ToList();
+                    }
+                }
+                else
+                {
+                    return new List<string>();
                 }
             }
-            else
-            {
-                return new List<string>();
-            }
+            catch { return new List<string>(); }
         }
     }
 }

@@ -1,8 +1,13 @@
-﻿RecargarSalas();
+﻿$('#nav-page').html('Sesiones')
+$('#nav-icon').addClass('bi-house-fill')
+
+RecargarSalas();
 setInterval(RecargarSalas, 60000);
 
 RecargarSesiones();
 setInterval(RecargarSalas, 30000);
+
+$('#FormUsuario').load('/_FormUsuario/_FormUsuarioPartial');
 
 function FinalizarSesion(matricula) {
     $.ajax({
@@ -24,14 +29,10 @@ function FinalizarSesion(matricula) {
 
 function FinalizarSesionTabla() {
     if ($('#no').length) {
-        alert('No hay sesiones activas');
+        alert('No hay sesiones activas por el momento');
         return;
     }
     $('#ModalFinalizar').modal('show');
-}
-
-function RecargarFormUsuario() {
-    $('#FormUsuario').load('/_FormUsuario/_FormUsuarioPartial');
 }
 
 function RecargarSalas() {

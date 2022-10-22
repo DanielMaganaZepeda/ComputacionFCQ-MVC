@@ -8,7 +8,7 @@ namespace ComputacionFCQ_MVC.Controllers
     {
         public IActionResult Reservaciones()
         {
-            return View();
+            return View(); 
         }
 
         [HttpGet]
