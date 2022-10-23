@@ -22,6 +22,52 @@ namespace ComputacionFCQ_MVC.Models
 
         public virtual ICollection<Sala> Salas { get; set; }
 
+        public static string BuscarPorNombre(string nombre)
+        {
+            if (!Validaciones.Curso(nombre)) return "Ninguna sala dispone de este programa por el momento";
+            try
+            {
+                using (var db = new ComputacionFCQContext())
+                {
+                    List<Sala> salas = db.Programas.Where(x => x.Nombre == nombre).FirstOrDefault().Salas.ToList();
+
+                    if (salas.Count > 0)
+                    {
+                        string output = "Disponible en las salas: ";
+
+                        foreach (var sala in salas)
+                            output += $"{sala.Id}, ";
+                        return output.Remove(output.Length - 2);
+                    }
+                    else
+                        return "Ninguna sala dispone de este programa por el momento";
+                }
+            }
+            catch { return "Error en Models.Programa.BuscarPorNombre, actualice la página y vuelva a intentarlo "; }
+        }
+
+        public static string GetProgramasJSON()
+        {
+            try
+            {
+                string json = "[";
+                using (var db = new ComputacionFCQContext())
+                {
+                    List<string> programas = db.Programas.Where(x=>x.Activo==true && x.Nombre!="Sin programa").OrderBy(x => x.Nombre).Select(x => x.Nombre).ToList();
+
+                    if (programas.Count == 0)
+                        return "[]";
+
+                    foreach(var programa in programas)
+                    {
+                        json += $"'{programa}', ";
+                    }
+                }
+                return json + "]";
+            }
+            catch { return "[]"; }
+        }
+
         public static void EliminarPrograma(string id)
         {
             try
@@ -76,7 +122,7 @@ namespace ComputacionFCQ_MVC.Models
             {
                 using (var db = new ComputacionFCQContext())
                 {
-                    var lista = db.Programas.Where(x => x.Activo == true).OrderBy(x => x.Nombre).ToList();
+                    var lista = db.Programas.Where(x => x.Activo == true && x.Nombre!="Sin programa").OrderBy(x => x.Nombre).ToList();
                     //No se porque pero si quitamos este for each genera un error, quiero pensar que es para que el LazyLoading reconozca los valores de sala
                     foreach (Programa programa in lista)
                     {

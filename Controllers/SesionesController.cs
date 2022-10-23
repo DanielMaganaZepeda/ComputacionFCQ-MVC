@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ComputacionFCQ_MVC.Models;
+using Newtonsoft.Json.Linq;
 
 namespace ComputacionFCQ_MVC.Controllers
 {
@@ -10,6 +11,19 @@ namespace ComputacionFCQ_MVC.Controllers
         public SesionesController(ComputacionFCQContext context)
         {
             _context = context;
+        }
+
+        [HttpGet]
+        public IActionResult GetProgramas()
+        {
+            var jObject = JArray.Parse(Programa.GetProgramasJSON());
+            return Content(jObject.ToString(), "application/json");
+        }
+
+        [HttpGet]
+        public IActionResult BuscarPrograma(string programa)
+        {
+            return Json(new { responseText = Programa.BuscarPorNombre(programa) });
         }
 
         public IActionResult TablaSesionesPartial()

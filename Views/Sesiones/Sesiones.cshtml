@@ -1,7 +1,15 @@
 ﻿<!--Tabla de estado de salas-->
 <div class="card cards">
     <div class="card-body">
-        <div class="header" style="margin-bottom:10px;">Estado de las salas</div>
+        <div style="display:flex; align-items:center; margin-bottom:15px;">
+            <div class="header" style="margin-bottom:10px;">Estado de las salas</div>
+
+            <button class="btn btn-primary flex" style="margin-left:auto; height:35px;" onclick="$('#ModalPrograma').modal('show')">
+                <i class="bi bi-search" style="font-size: 14px; margin-right:10px;"></i> Buscar por programa
+            </button>
+        </div>
+
+
         <div id="tabla_salas"></div>
     </div>
 </div>
@@ -12,18 +20,38 @@
         <div class="flex header" style="margin-bottom:10px;">
             Listado de sesiones activas
 
-            <button class="btn btn-danger flex" style="margin-left: auto; margin-right:15px; height:30px;" onclick="FinalizarSesionTabla()">
+            <button class="btn btn-danger flex" style="margin-left: auto; margin-right:15px; height:35px;" onclick="FinalizarSesionTabla()">
                 <i class="bi bi-x-circle" style="margin-right: 10px; font-size: 14px;"></i>
                 Finalizar una sesión
             </button>
 
-            <button class="flex btn btn-success" style="height:30px;" onclick="_FormUsuario_LimpiarForm(); $('#ModalIniciar').modal('show')">
+            <button class="flex btn btn-success" style="height:35px;" onclick="_FormUsuario_LimpiarForm(); $('#ModalIniciar').modal('show')">
                 <i class="bi bi-triangle-fill" style="margin-right: 10px; font-size: 10px; transform: rotate(90deg);"></i>
                 Iniciar una sesión
             </button>
 
         </div>
         <div id="tabla_sesiones"></div>
+    </div>
+</div>
+
+<!--Modal buscar por programa-->
+<div class="modal fade" id="ModalPrograma">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Finalizar una sesión</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <select id="select_programa" class="input"></select>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary flex" style="margin-left:auto; height:35px;" onclick="BuscarPrograma()">
+                    <i class="bi bi-search" style="font-size: 14px; margin-right:10px;"></i> Buscar por programa
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 

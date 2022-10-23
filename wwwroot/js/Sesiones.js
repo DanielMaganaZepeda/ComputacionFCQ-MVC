@@ -9,6 +9,34 @@ setInterval(RecargarSalas, 30000);
 
 $('#FormUsuario').load('/_FormUsuario/_FormUsuarioPartial');
 
+CargarModalProgramas();
+
+function BuscarPrograma() {
+    $.ajax({
+        url: '/Sesiones/BuscarPrograma',
+        data: {programa: $('#select_programa').val()},
+        type: "GET",
+        success: function (response) {
+            alert(response['responseText']);
+        }
+    });
+}
+
+function CargarModalProgramas(){
+    $.ajax({
+        url: '/Sesiones/GetProgramas',
+        type: "GET",
+        success: function (response) {
+            response.forEach(programa => {
+                $('#select_programa').append($('<option>', {
+                    value: programa,
+                    text: programa
+                }))
+            })
+        }
+    });
+}
+
 function FinalizarSesion(matricula) {
     $.ajax({
         url: '/Sesiones/FinalizarSesion',
