@@ -1,15 +1,26 @@
 ﻿<card class="card cards" style="padding-bottom:0px;">
     <div class="card-body" style="margin-bottom:0px;">
         <div style="display:flex; align-items:center;">
-            <div class="header">Listado de computadoras</div>
-            <select id="sala" class="input" style="margin-left:15px; height:30px;" onchange="ActualizarComputadoras()">
-                <option selected value="1">Sala 1</option>
-                <option value="2">Sala 2</option>
-                <option value="3">Sala 3</option>
-                <option value="4">Sala 4</option>
-                <option value="5">Sala 5</option>
-            </select>
+            <div style="display:flex; align-items:center;">
+                <div class="header">Listado de computadoras</div>
+                <select id="sala" class="input" style="margin-left:15px; height:30px;" onchange="ActualizarComputadoras()">
+                    <option selected value="1">Sala 1</option>
+                    <option value="2">Sala 2</option>
+                    <option value="3">Sala 3</option>
+                    <option value="4">Sala 4</option>
+                    <option value="5">Sala 5</option>
+                </select>
+            </div>
+
+            <div style="margin-left:auto; display:flex;">
+                <i class="bi bi-circle-fill" style="color:lightgreen; margin-right:5px; "></i> 
+                <div id="disponibles" style="margin-right:5px;"></div>Disponibles
+
+                <i class="bi bi-circle-fill" style="color:lightcoral; margin-right:5px; margin-left:15px;"></i> 
+                <div id="no_disponibles" style="margin-right:5px;"></div>No disponibles
+            </div>
         </div>
+
         <hr />
         <div class="table table-responsive" style="margin-bottom:0px;">
             <table class="table" style="width:100%; table-layout:fixed; margin-bottom:0px;">

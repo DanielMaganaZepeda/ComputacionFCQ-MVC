@@ -8,6 +8,11 @@ namespace ComputacionFCQ_MVC.Controllers
     {
         public IActionResult Computadoras()
         {
+            if (HttpContext.Session.GetString("usuario") == null)
+            {
+                TempData["direccion"] = "Computadoras";
+                return RedirectToAction("Login", "Login");
+            }
             return View();
         }
 

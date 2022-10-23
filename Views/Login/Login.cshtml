@@ -1,0 +1,22 @@
+﻿@model string
+
+<div style="color:gray; width:300px; margin-top:30px; margin-left:auto; margin-right:auto;">
+    Usuario
+    <input id="usuario" type="text" class="form-control" style="width:100%; margin-bottom:15px;"/>
+
+    Contraseña
+    <input id="contrasena" type="password" class="form-control" style="width:100%"/>
+
+    <hr />
+    <button id="btn_login" type="submit" class="btn btn-primary flex" style="width:100%;">
+        <i class="bi bi-box-arrow-right" style="font-size:16px; margin-right:5px;"></i>
+        Acceder
+    </button>
+</div>
+
+@section Scripts{
+    <script src="~/js/Login.js"></script>
+    <script>
+        var path_destino = "@Model";
+    </script>
+}

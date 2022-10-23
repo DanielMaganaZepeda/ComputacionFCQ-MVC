@@ -7,6 +7,11 @@ namespace ComputacionFCQ_MVC.Controllers
     {
         public IActionResult Programas()
         {
+            if (HttpContext.Session.GetString("usuario") == null)
+            {
+                TempData["direccion"] = "Programas";
+                return RedirectToAction("Login", "Login");
+            }
             return View(Programa.GetProgramas());
         }
 

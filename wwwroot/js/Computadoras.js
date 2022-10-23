@@ -92,7 +92,7 @@ function ActualizarComputadoras() {
         type: "GET",
         success: function (response) {
             for (com of response) {
-
+                var no_disp = 0;
                 $(`#div_${com['numero']}`).removeClass();
 
                 if (com['disponible'] == true) {
@@ -101,11 +101,14 @@ function ActualizarComputadoras() {
 
                 }
                 else {
+                    no_disp++;
                     $(`#div_${com['numero']}`).addClass('div no-disponible flex');
                     $(`#div_${com['numero']}`).html(`No disponible`)
 
                 }
             }
+            $('#disponibles').html(response.length - no_disp);
+            $('#no_disponibles').html(no_disp);
         }
     });
 }

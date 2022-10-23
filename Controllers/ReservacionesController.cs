@@ -8,6 +8,11 @@ namespace ComputacionFCQ_MVC.Controllers
     {
         public IActionResult Reservaciones()
         {
+            if (HttpContext.Session.GetString("usuario") == null)
+            {
+                TempData["direccion"] = "Reservaciones";
+                return RedirectToAction("Login", "Login");
+            }
             return View(); 
         }
 
